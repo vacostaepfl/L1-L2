@@ -26,7 +26,7 @@ def solve(y, phi, lambda1, lambda2, l2operator=None):
     else:
         G = hstack([lambda1 * L1Norm(phi.shape[1]), NullFunc(phi.shape[1])])
 
-    pgd = PGD(f=F, g=G)
+    pgd = PGD(f=F, g=G, verbosity=50)
     pgd.fit(x0=np.zeros(2 * phi.shape[1]))
     x = pgd.solution()
     x1 = x[: phi.shape[1]]

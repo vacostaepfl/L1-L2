@@ -2,34 +2,32 @@ import numpy as np
 from scipy.sparse import rand
 
 
-def compute_sparse(dim, padding, density, values_range, seed=None):
+def compute_sparse(dim, values_range, density, seed=None):
     value_min, value_max = np.min(values_range), np.max(values_range)
-    spikes = rand(
-        dim[0] - 2 * padding, dim[1] - 2 * padding, density, random_state=seed
-    ).toarray()
-    spikes *= value_max - value_min
+    spikes = rand(dim[0] - 2, dim[1] - 2, density, random_state=seed).toarray()
+    spikes = spikes * value_max - value_min
     spikes += value_min
+
     return np.pad(
         spikes,
-        ((padding, padding), (padding, padding)),
+        ((1, 1), (1, 1)),
         mode="constant",
         constant_values=0,
     )
 
 
-def compute_smooth(dim, nb_gaussian, sigmas, values_range, centers_range, seed=None):
-    np.random.seed(seed)
-    if isinstance(sigmas, tuple):
-        sigmas = np.random.uniform(*sigmas, nb_gaussian, seed=None)
-    elif isinstance(sigmas, list):
-        sigmas = np.random.choice(sigmas, nb_gaussian)
-    elif isinstance(sigmas, (float, int)):
+def compute_smooth(dim, values_range, sigmas_range, nb_gaussian):
+    if isinstance(sigmas_range, tuple):
+        sigmas = np.random.uniform(*sigmas_range, nb_gaussian)
+    elif isinstance(sigmas_range, list):
+        sigmas = np.random.choice(sigmas_range, nb_gaussian)
+    elif isinstance(sigmas_range, (float, int)):
         sigmas = sigmas * np.ones(nb_gaussian)
     else:
         ValueError("sigmas should be of type : tuple, list or int/float")
 
     amplitudes = np.random.uniform(*values_range, nb_gaussian)
-    centers = centers_range * np.random.uniform(-1, 1, (nb_gaussian, 2))
+    centers = (1 - np.max(sigmas)) * np.random.uniform(-1, 1, (nb_gaussian, 2))
 
     x = np.linspace(-1, 1, dim[0])
     y = np.linspace(-1, 1, dim[1])
@@ -43,12 +41,6 @@ def compute_smooth(dim, nb_gaussian, sigmas, values_range, centers_range, seed=N
         ).reshape(dim)
 
     return smooth
-
-
-def compute_signal(dim, sparse_param, smooth_param, seed=None):
-    x1 = compute_sparse(dim, **sparse_param, seed=seed)
-    x2 = compute_smooth(dim, **smooth_param, seed=seed)
-    return x1, x2
 
 
 def compute_y(y0, psnr):
