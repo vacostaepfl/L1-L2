@@ -1,113 +1,168 @@
 import numpy as np
+import matplotlib.pyplot as plt
 import pyxu.operator as pxo
+from pyxu.abc import LinOp
 
 
-def non_uni_FFT(
-    dim: tuple, L: int | float, theta: float, on_grid: bool = False
-) -> np.ndarray:
-    """
-    Perform a non-uniform Fast Fourier Transform (NUFFT).
+class NuFFT:
+    def __init__(
+        self, dim: tuple, L: int | float, theta: float, on_grid: bool, seed: int = False
+    ):
+        """
+        Initialize the NuFFT object.
 
-    Args:
-        dim (tuple): The dimensions of the input array.
-        L (int | float): Number of samples to keep for the transform. If L is a float,
-                         it is interpreted as a fraction of the product of dimensions.
-        theta (float): A scaling factor for the number of Gaussian samples.
-        on_grid (bool, optional): If True, generate samples on a grid; if False, use non-uniform samples.
+        Args:
+            dim (tuple): Dimensions of the input data.
+            L (int | float): The number or proportion of N^2/2 samples to keep in the NuFFT.
+            theta (float): Fraction of samples that are Gaussian.
+            on_grid (bool): Whether to sample on a grid.
+            seed (int, optional): Random seed for reproducibility.
+        """
+        np.random.seed(seed)
+        self.dim: tuple = dim
+        self.L = round(L * np.prod(self.dim) / 2) if isinstance(L, float) else L
+        assert (
+            self.L <= np.prod(self.dim) / 2
+        ), f"L={self.L} should not be larger than the product of the dimensions ({np.prod(dim)/2})"
+        self.theta: float = theta
+        self.on_grid: tuple = on_grid
+        self.nb_gaussian: int = round(self.theta * self.L)
+        self.nb_uniform: int = self.L - self.nb_gaussian
 
-    Returns:
-        np.ndarray: The NUFFT result as a NumPy array.
-    """
-    if isinstance(L, float):
-        L = round(L * np.prod(dim) / 2)
+        self.phi: LinOp = None
+        self.gaussian_samples: np.ndarray = None
+        self.gaussian_indices: np.ndarray = None
+        self.uniform_samples: np.ndarray = None
+        self.uniform_indices: np.ndarray = None
+        self.samples: np.ndarray = None
 
-    samples = mix_sampling(dim, L, theta, on_grid)
-    phi = pxo.NUFFT.type2(samples, dim, isign=-1, eps=1e-3, real=True)
-    return phi
+        self.compute_NuFFT()
+        self.dim_in: int = self.phi.shape[1]
+        self.dim_out: int = self.phi.shape[0]
 
+    def __call__(self, x) -> np.ndarray:
+        """
+        Apply the NuFFT to the input data x.
 
-def mix_sampling(dim: tuple, L: int, theta: float, on_grid: bool) -> np.ndarray:
-    """
-    Generate a mixture of Gaussian and uniform samples for NUFFT.
+        Args:
+            x (np.ndarray): Input data.
 
-    Args:
-        dim (tuple): The dimensions of the input array.
-        L (int | float): Number of samples to keep for the transform. If L is a float,
-                         it is interpreted as a fraction of the product of dimensions.
-        theta (float): A scaling factor for the number of Gaussian samples.
-        on_grid (bool): If True, generate samples on a grid; if False, use non-uniform samples.
+        Returns:
+            np.ndarray: The result of the NuFFT applied to x.
+        """
+        return self.phi.apply(x)
 
-    Returns:
-        np.ndarray: An array of mixed samples.
-    """
-    nb_gaussian = round(theta * L)
-    nb_uniform = L - nb_gaussian
+    def compute_NuFFT(self):
+        """
+        Create the NuFFT linear operator.
+        """
+        self.mix_sampling()
+        self.phi = pxo.NUFFT.type2(
+            self.samples, self.dim, isign=-1, eps=1e-3, real=True
+        )
 
-    if not on_grid:
-        if nb_gaussian > 0 and nb_uniform > 0:
-            gaussian_samples = gaussian_sampling(nb_gaussian)
-            uniform_samples = uniform_sampling(nb_uniform)
-            samples = np.concatenate([gaussian_samples, uniform_samples])
-        elif nb_gaussian > 0:
-            samples = gaussian_sampling(nb_gaussian)
+    def mix_sampling(self):
+        """
+        Generate a mixture of Gaussian and uniform samples for NUFFT.
+        """
+        if self.nb_gaussian > 0 and self.nb_uniform > 0:
+            self.gaussian_sampling()
+            self.uniform_sampling()
+            self.samples = np.concatenate([self.gaussian_samples, self.uniform_samples])
+        elif self.nb_gaussian > 0:
+            self.gaussian_sampling()
+            self.samples = self.gaussian_samples
         else:
-            samples = uniform_sampling(nb_uniform)
-    else:
-        samples = set()
-        p_x = gaussian_pdf(dim[0])
-        p_y = gaussian_pdf(dim[1])
-        while len(samples) < nb_gaussian:
-            x = np.pi * (2 * np.random.choice(dim[0], p=p_x) / dim[0] - 1)
-            y = np.pi * (2 * np.random.choice(dim[1], p=p_y) / dim[1] - 1)
-            samples.add((x, y))
-        while len(samples) - nb_gaussian < nb_uniform:
-            x = np.pi * (2 * np.random.choice(dim[0]) / dim[0] - 1)
-            y = np.pi * (2 * np.random.choice(dim[1]) / dim[1] - 1)
-            samples.add((x, y))
-        samples = np.array(list(samples))
-    return samples
+            self.uniform_sampling()
+            self.samples = self.uniform_samples
 
+    def uniform_sampling(self):
+        """
+        Generate uniform samples.
+        """
+        if self.on_grid:
+            grid_size = (self.dim[0] // 2, self.dim[1])
+            pdf = np.ones(grid_size).T.ravel()
+            if self.gaussian_indices is not None:
+                pdf[self.gaussian_indices] = 0
+            pdf /= pdf.sum()
 
-def uniform_sampling(nb_samples: int) -> np.ndarray:
-    """
-    Generate uniform samples in a specified range.
+            self.uniform_indices = np.random.choice(
+                grid_size[0] * grid_size[1],
+                self.nb_uniform,
+                p=pdf,
+                replace=False,
+            )
+            x, y = np.unravel_index(self.uniform_indices, grid_size)
+            self.uniform_samples = (2 * np.pi / self.dim[0]) * np.stack(
+                [x, y - self.dim[1] // 2]
+            ).T
+        else:
+            self.uniform_samples = np.random.uniform(
+                -np.pi, np.pi, (self.nb_uniform, 2)
+            )
 
-    Args:
-        nb_samples (int): Number of uniform samples to generate.
+    def gaussian_sampling(self):
+        """
+        Generate Gaussian samples.
+        """
+        if self.on_grid:
+            grid_size = (self.dim[0] // 2, self.dim[1])
+            std_dev_x = self.dim[0] / 8
+            std_dev_y = self.dim[1] / 8
+            x, y = np.meshgrid(np.arange(grid_size[0]), np.arange(grid_size[1]))
+            pdf_x = np.exp(-0.5 * (x**2) / std_dev_x**2)
+            pdf_y = np.exp(-0.5 * ((y - grid_size[1] / 2) ** 2) / std_dev_y**2)
+            pdf = pdf_x * pdf_y
+            pdf /= pdf.sum()
 
-    Returns:
-        np.ndarray: An array of uniform samples in the range [-π, π].
-    """
-    return np.random.uniform(-np.pi, np.pi, (nb_samples, 2))
+            self.gaussian_indices = np.random.choice(
+                grid_size[0] * grid_size[1],
+                self.nb_gaussian,
+                p=pdf.T.ravel(),
+                replace=False,
+            )
+            x, y = np.unravel_index(self.gaussian_indices, grid_size)
+            self.gaussian_samples = (2 * np.pi / self.dim[0]) * np.stack(
+                [x, y - self.dim[1] // 2]
+            ).T
+        else:
+            gaussian_samples = np.random.multivariate_normal(
+                [0, 0], [[1, 0], [0, 1]], self.nb_gaussian
+            )
+            self.gaussian_samples = (
+                np.pi * gaussian_samples / np.max(np.abs(gaussian_samples))
+            )
 
-
-def gaussian_sampling(nb_samples: int) -> np.ndarray:
-    """
-    Generate Gaussian samples.
-
-    Args:
-        nb_samples (int): Number of Gaussian samples to generate.
-
-    Returns:
-        np.ndarray: An array of Gaussian samples scaled to the range [-π, π].
-    """
-    gaussian_samples = np.random.multivariate_normal(
-        [0, 0], [[1, 0], [0, 1]], nb_samples
-    )
-    gaussian_samples *= np.pi / np.max(np.abs(gaussian_samples))
-    return gaussian_samples
-
-
-def gaussian_pdf(size: int) -> np.ndarray:
-    """
-    Generate a Gaussian probability density function.
-
-    Args:
-        size (int): Size of the probability density function.
-
-    Returns:
-        np.ndarray: Gaussian probability density function.
-    """
-    std_dev = size / 6
-    pdf = np.exp(-0.5 * ((np.arange(size) - size / 2) ** 2) / (std_dev**2))
-    return pdf / pdf.sum()
+    def plot_samples(self):
+        """
+        Plot the generated samples.
+        """
+        figsize = (5, 5)
+        xticks = np.arange(-np.pi, np.pi + 0.1, np.pi / 4)
+        yticks = xticks
+        if self.on_grid:
+            figsize = (2.5, 5)
+            xticks = np.arange(0, np.pi + 0.1, np.pi / 4)
+        fig, ax = plt.subplots(figsize=figsize)
+        if self.gaussian_samples is not None:
+            ax.scatter(
+                *self.gaussian_samples.T,
+                s=2,
+                color="tab:blue",
+                label="Gaussian",
+            )
+        if self.uniform_samples is not None:
+            ax.scatter(
+                *self.uniform_samples.T,
+                s=2,
+                color="tab:orange",
+                label="Uniform",
+            )
+        ax.set_xticks(xticks, labels=[str(x / np.pi) + r"$\pi$" for x in xticks])
+        ax.set_yticks(yticks, labels=[str(x / np.pi) + r"$\pi$" for x in yticks])
+        ax.legend()
+        ax.grid(visible=True)
+        ax.set_axisbelow(True)
+        fig.suptitle("Samples kept in NuFFT")
+        plt.show()

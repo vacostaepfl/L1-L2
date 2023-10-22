@@ -1,6 +1,8 @@
 import numpy as np
 import matplotlib.pyplot as plt
+from matplotlib import colors
 from scipy.stats import wasserstein_distance
+from mpl_toolkits.axes_grid1 import make_axes_locatable
 
 
 def plot_signal(sparse: np.ndarray, smooth: np.ndarray) -> None:
@@ -16,13 +18,17 @@ def plot_signal(sparse: np.ndarray, smooth: np.ndarray) -> None:
     for ax, img, title in zip(
         axes, [sparse, smooth, signal], ["Sparse", "Smooth", "Signal"]
     ):
-        ax.axis("off")
         ax.set_title(title)
-        im = ax.imshow(img)
-
-        plt.colorbar(im, ax=ax, fraction=0.045, pad=0.04)
-    fig.subplots_adjust(hspace=0.3)
+        ax.set_xticks([])
+        ax.set_yticks([])
+        divnorm = colors.CenteredNorm(vcenter=0.0)
+        im = ax.imshow(img, cmap="seismic", norm=divnorm)
+        divider = make_axes_locatable(ax)
+        cax1 = divider.append_axes("right", size="5%", pad=0.05)
+        plt.colorbar(im, cax=cax1)
+    # fig.subplots_adjust(hspace=0.3)
     fig.tight_layout()
+    plt.show()
 
 
 def nmse(x1: np.ndarray, x2: np.ndarray) -> float:
