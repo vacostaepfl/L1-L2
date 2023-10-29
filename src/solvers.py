@@ -2,7 +2,22 @@ import numpy as np
 from pyxu.abc import LinOp
 from pyxu.operator import SquaredL2Norm, L1Norm, hstack, NullFunc
 from pyxu.opt.solver import PGD
+from pyxu.opt.stop import MaxIter, RelError
 from src.operators import NuFFT
+
+
+def solve(
+    y: np.ndarray,
+    op: NuFFT,
+    lambda1: float,
+    lambda2: float,
+    coupled: bool,
+    l2operator: LinOp = None,
+):
+    if coupled:
+        return coupled_solve(y, op, lambda1, lambda2, l2operator)
+    else:
+        raise NotImplementedError
 
 
 def coupled_solve(
@@ -25,7 +40,7 @@ def coupled_solve(
     F = l22_loss * hstack([op.phi, op.phi])
 
     if lambda2 != 0.0:
-        lambda2 *= np.linalg.norm(op.phi.adjoint(y), ord=np.inf)
+        lambda2 *= np.linalg.norm(op.phi.adjoint(y), ord=np.inf) / 2
         if isinstance(l2operator, LinOp):
             L = lambda2 * SquaredL2Norm(l2operator.shape[0]) * l2operator
         else:
@@ -40,8 +55,9 @@ def coupled_solve(
         lambda1 *= np.linalg.norm(op.phi.adjoint(y), ord=np.inf)
         G = hstack([lambda1 * L1Norm(op.dim_in), NullFunc(op.dim_in)])
 
-    pgd = PGD(f=F, g=G, verbosity=100)
-    pgd.fit(x0=np.ones(2 * op.dim_in))
+    pgd = PGD(f=F, g=G, verbosity=500)
+    sc = MaxIter(n=100) & RelError(eps=1e-4)
+    pgd.fit(x0=np.zeros(2 * op.dim_in), stop_crit=sc)
     x = pgd.solution()
     x1 = x[: op.dim_in]
     x2 = x[op.dim_in :]

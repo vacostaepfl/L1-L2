@@ -3,6 +3,9 @@ import matplotlib.pyplot as plt
 import pyxu.operator as pxo
 from pyxu.abc import LinOp
 
+from matplotlib.figure import Figure
+from matplotlib.axes import Axes
+
 
 class NuFFT:
     def __init__(
@@ -108,8 +111,8 @@ class NuFFT:
         """
         if self.on_grid:
             grid_size = (self.dim[0] // 2, self.dim[1])
-            std_dev_x = self.dim[0] / 8
-            std_dev_y = self.dim[1] / 8
+            std_dev_x = self.dim[0] / 10
+            std_dev_y = self.dim[1] / 10
             x, y = np.meshgrid(np.arange(grid_size[0]), np.arange(grid_size[1]))
             pdf_x = np.exp(-0.5 * (x**2) / std_dev_x**2)
             pdf_y = np.exp(-0.5 * ((y - grid_size[1] / 2) ** 2) / std_dev_y**2)
@@ -131,38 +134,49 @@ class NuFFT:
                 [0, 0], [[1, 0], [0, 1]], self.nb_gaussian
             )
             self.gaussian_samples = (
-                np.pi * gaussian_samples / np.max(np.abs(gaussian_samples))
+                np.pi * gaussian_samples / (1.5 * np.max(np.abs(gaussian_samples)))
             )
 
-    def plot_samples(self):
+    def plot_samples(self, fig: Figure = None, ax: Axes = None):
         """
         Plot the generated samples.
+
+        Parameters:
+            fig (Figure, optional): The Matplotlib Figure object to use for the plot.
+            ax (Axes, optional): The Matplotlib Axes object to use for the plot.
+
+        If `fig` and `ax` are not provided, a new Figure and Axes will be created for the plot.
         """
-        figsize = (5, 5)
-        xticks = np.arange(-np.pi, np.pi + 0.1, np.pi / 4)
-        yticks = xticks
-        if self.on_grid:
-            figsize = (2.5, 5)
-            xticks = np.arange(0, np.pi + 0.1, np.pi / 4)
-        fig, ax = plt.subplots(figsize=figsize)
+        figsize = (2.5, 5)
+        yticks = np.arange(-np.pi, np.pi + 0.1, np.pi / 4)
+        xticks = np.arange(0, np.pi + 0.1, np.pi / 4)
+        if ax == None and fig == None:
+            fig, ax = plt.subplots(figsize=figsize)
         if self.gaussian_samples is not None:
             ax.scatter(
-                *self.gaussian_samples.T,
+                x=np.abs(self.gaussian_samples[:, 0]),
+                y=self.gaussian_samples[:, 1],
                 s=2,
                 color="tab:blue",
                 label="Gaussian",
             )
         if self.uniform_samples is not None:
             ax.scatter(
-                *self.uniform_samples.T,
+                x=np.abs(self.uniform_samples[:, 0]),
+                y=self.uniform_samples[:, 1],
                 s=2,
                 color="tab:orange",
                 label="Uniform",
             )
         ax.set_xticks(xticks, labels=[str(x / np.pi) + r"$\pi$" for x in xticks])
         ax.set_yticks(yticks, labels=[str(x / np.pi) + r"$\pi$" for x in yticks])
-        ax.legend()
+        ax.legend(
+            title="on-grid" if self.on_grid else "off-grid",
+            handletextpad=0,
+            fontsize="x-small",
+        )
         ax.grid(visible=True)
         ax.set_axisbelow(True)
-        fig.suptitle("Samples kept in NuFFT")
-        plt.show()
+        fig.suptitle(
+            f"Samples: L={2*self.L/np.prod(self.dim):.0%}", verticalalignment="top"
+        )

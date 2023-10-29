@@ -75,7 +75,7 @@ def compute_smooth(
 
     smooth = smooth_amplitude * smooth / np.max(np.abs(smooth))
 
-    return smooth  # corriger background = 0
+    return smooth
 
 
 def compute_y(y0: np.ndarray, psnr: int) -> np.ndarray:
