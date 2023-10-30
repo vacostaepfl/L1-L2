@@ -149,7 +149,12 @@ def plot_results(
 
 
 def save_widget(
-    fig: plt.Figure, lambda1: float, lambda2: float, op: NuFFT, coupled: bool = True
+    fig: plt.Figure,
+    lambda1: float,
+    lambda2: float,
+    op: NuFFT,
+    psnr: int,
+    coupled: bool = True,
 ):
     """
     Saves a Matplotlib figure to a specified directory with a filename based on parameters.
@@ -158,7 +163,8 @@ def save_widget(
     - fig (plt.Figure): The Matplotlib figure to be saved.
     - lambda1 (float): The value of lambda1.
     - lambda2 (float): The value of lambda2.
-    - op (SomeClass): An instance of the 'SomeClass' class.
+    - op (NuFFT): An instance of the 'SomeClass' class.
+    - psnr (int): Peak signal to noise ratio
     - coupled (bool, optional): Whether the figure is coupled. Default is True.
 
     Returns:
@@ -179,18 +185,47 @@ def save_widget(
 
     display(button, output)
 
-    def on_button_clicked():
-        directory = f"{EXP_PATH}/{op.dim[0]}x{op.dim[1]}/"
-        directory += f"L_{2*op.L/np.prod(op.dim):.0%}/"
-        if not os.path.exists(directory):
-            os.makedirs(directory)
-        name = "coupled/" if coupled else "decoupled/"
-        name += f"l1_{lambda1:.1e}_"
-        name += f"l2_{lambda2:.1e}"
-        name += ".png"
-        filename = directory + name
-        fig.savefig(filename, bbox_inches="tight")
+    def on_button_clicked(b):
+        filename = save_fig(fig, lambda1, lambda2, op, psnr, coupled)
         with output:
             print(f"Figure saved as {filename}")
 
     button.on_click(on_button_clicked)
+
+
+def save_fig(
+    fig: plt.Figure,
+    lambda1: float,
+    lambda2: float,
+    op: NuFFT,
+    psnr: int,
+    coupled: bool = True,
+):
+    """
+    Save a matplotlib figure to a specified directory with a filename generated
+    based on the input parameters.
+
+    Parameters:
+    - fig (plt.Figure): The matplotlib figure to be saved.
+    - lambda1 (float): The value of lambda1.
+    - lambda2 (float): The value of lambda2.
+    - op (NuFFT): An instance of NuFFT class.
+    - psnr (int): The value of PSNR.
+    - coupled (bool, optional): indicating whether the problem is coupled or decoupled.
+                                Defaults to True.
+
+    Returns:
+    - str: The filename of the saved figure.
+    """
+    directory = f"{EXP_PATH}/{op.dim[0]}x{op.dim[1]}/"
+    directory += f"L_{2*op.L/np.prod(op.dim):.0%}/"
+    directory += f"psnr_{psnr}/"
+    directory += "coupled/" if coupled else "decoupled/"
+    if not os.path.exists(directory):
+        os.makedirs(directory)
+    name = f"l1_{lambda1:.1e}_"
+    name += f"l2_{lambda2:.1e}"
+    name += ".png"
+    filename = directory + name
+    fig.savefig(filename, bbox_inches="tight")
+    return filename

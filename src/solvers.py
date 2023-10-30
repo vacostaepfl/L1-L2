@@ -47,7 +47,7 @@ def coupled_solve(
             L = lambda2 * SquaredL2Norm(op.dim_in)
 
         F = F + hstack([NullFunc(op.dim_in), L])
-    F.diff_lipschitz = F.estimate_diff_lipschitz()
+    F.diff_lipschitz = F.estimate_diff_lipschitz(method="svd")
 
     if lambda1 == 0.0:
         G = NullFunc(2 * op.dim_in)
