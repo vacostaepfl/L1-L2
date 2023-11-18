@@ -1,6 +1,6 @@
 import numpy as np
-from pyxu.abc import LinOp
-from pyxu.operator import SquaredL2Norm, L1Norm, hstack, NullFunc
+from pyxu.abc import LinOp, QuadraticFunc
+from pyxu.operator import SquaredL2Norm, L1Norm, hstack, NullFunc, IdentityOp
 from pyxu.opt.solver import PGD
 from pyxu.opt.stop import MaxIter, RelError
 from src.operators import NuFFT
@@ -17,7 +17,7 @@ def solve(
     if coupled:
         return coupled_solve(y, op, lambda1, lambda2, l2operator)
     else:
-        raise NotImplementedError
+        return decoupled_solve(y, op, lambda1, lambda2, l2operator)
 
 
 def coupled_solve(
@@ -62,3 +62,48 @@ def coupled_solve(
     x1 = x[: op.dim_in]
     x2 = x[op.dim_in :]
     return x1, x2
+
+
+def decoupled_solve(
+    y: np.ndarray, op: NuFFT, lambda1: float, lambda2: float, l2operator: LinOp = None
+) -> tuple:
+    """
+    Solve a decoupled optimization problem.
+
+    Args:
+        y (np.ndarray): Input data.
+        op (NuFFT): A NuFFT object.
+        lambda1 (float): Regularization parameter for the L1 norm.
+        lambda2 (float): Regularization parameter for the L2 norm.
+        l2operator (LinOp, optional): Linear operator for L2 regularization. Defaults to None.
+
+    Returns:
+        tuple: A tuple containing two NumPy arrays - x1 and x2, which are solutions to the optimization problem.
+    """
+    lambda2 *= np.linalg.norm(op.phi.adjoint(y), ord=np.inf)
+    lambda1 *= np.linalg.norm(op.phi.adjoint(y), ord=np.inf)
+
+    l22_loss = (1 / 2) * QuadraticFunc(
+        (1, op.dim_out),
+        Q=(lambda2 * IdentityOp(op.dim_out) + op.phi.cogram()).dagger(
+            damp=0
+        ),  # mettre Id (N^2 !!!!!) l1/l2 *(N^2 + l2)
+    ).asloss(y)
+    F = l22_loss * op.phi
+
+    F.diff_lipschitz = F.estimate_diff_lipschitz(method="svd")
+
+    if lambda1 == 0.0:
+        G = NullFunc(op.dim_in)
+    else:
+        G = lambda1 / lambda2 * L1Norm(op.dim_in)
+
+    pgd = PGD(f=F, g=G, verbosity=500)
+    sc = MaxIter(n=100) & RelError(eps=1e-4)
+    pgd.fit(x0=np.zeros(op.dim_in), stop_crit=sc)
+    x1 = pgd.solution()
+    x2 = -op.phi.pinv(op.phi.apply(x1) - y, damp=lambda2)
+    return x1, x2
+
+
+# print(op.expr())

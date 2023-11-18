@@ -20,7 +20,7 @@ def plot_signal(sparse: np.ndarray, smooth: np.ndarray) -> None:
         smooth (np.ndarray): A NumPy array representing the smooth signal.
     """
     signal = sparse + smooth
-    fig, axes = plt.subplots(1, 3)
+    fig, axes = plt.subplots(1, 3, figsize=(10, 10))
     for ax, img, title in zip(
         axes, [sparse, smooth, signal], ["Sparse", "Smooth", "Signal"]
     ):
@@ -199,7 +199,7 @@ def save_fig(
     lambda2: float,
     op: NuFFT,
     psnr: int,
-    coupled: bool = True,
+    coupled: bool,
 ):
     """
     Save a matplotlib figure to a specified directory with a filename generated
@@ -211,8 +211,7 @@ def save_fig(
     - lambda2 (float): The value of lambda2.
     - op (NuFFT): An instance of NuFFT class.
     - psnr (int): The value of PSNR.
-    - coupled (bool, optional): indicating whether the problem is coupled or decoupled.
-                                Defaults to True.
+    - coupled (bool): indicating whether the problem is coupled or decoupled.
 
     Returns:
     - str: The filename of the saved figure.
