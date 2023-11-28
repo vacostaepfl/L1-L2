@@ -105,7 +105,7 @@ def plot_results(
 
     # Plot signals
     subfig_signals.suptitle(
-        f"Signal size: {op.dim}",
+        f"Signal size: {(op.N,op.N)}",
         position=(0.515, 0.1),
         fontsize="medium",
     )
@@ -173,7 +173,7 @@ def save_widget(
     This function displays a 'SAVE' button and, when clicked, saves the figure with a filename
     based on the parameters 'lambda1', 'lambda2', 'op', and whether it is coupled or decoupled.
 
-    The figure is saved to a directory structure determined by the values of 'op.dim' and 'op.L'.
+    The figure is saved to a directory structure determined by the values of 'op.N' and 'op.L'.
     If the directory does not exist, it will be created.
 
     Example:
@@ -216,8 +216,11 @@ def save_fig(
     Returns:
     - str: The filename of the saved figure.
     """
-    directory = f"{EXP_PATH}/{op.dim[0]}x{op.dim[1]}/"
-    directory += f"L_{2*op.L/np.prod(op.dim):.0%}/"
+    directory = f"{EXP_PATH}/{op.N}/"
+    if isinstance(op.L, float):
+        directory += f"L_{op.L:.0%}/"
+    else:
+        directory += f"L_{op.L:.0f}/"
     directory += f"psnr_{psnr}/"
     directory += "coupled/" if coupled else "decoupled/"
     if not os.path.exists(directory):

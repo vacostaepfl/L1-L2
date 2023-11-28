@@ -3,13 +3,13 @@ from scipy.sparse import rand
 
 
 def compute_sparse(
-    dim: tuple, values_range: tuple, density: float, seed: int = None
+    N: int, values_range: tuple, density: float, seed: int = None
 ) -> np.ndarray:
     """
     Generate a sparse matrix with random values within the specified range.
 
     Args:
-        dim (tuple): Dimensions (rows, columns) of the sparse matrix.
+        N (int): Size of the squared sparse matrix.
         values_range (tuple): Range (min, max) for the random values.
         density (float): Density of non-zero elements in the sparse matrix.
         seed (int, optional): Random seed for reproducibility.
@@ -18,7 +18,7 @@ def compute_sparse(
         np.ndarray: Sparse matrix with random values within the specified range.
     """
     value_min, value_max = np.min(values_range), np.max(values_range)
-    spikes = rand(dim[0] - 2, dim[1] - 2, density, random_state=seed).toarray()
+    spikes = rand(N - 2, N - 2, density, random_state=seed).toarray()
     spikes[spikes != 0] = spikes[spikes != 0] * (value_max - value_min) + value_min
 
     return np.pad(
@@ -30,7 +30,7 @@ def compute_sparse(
 
 
 def compute_smooth(
-    dim: tuple,
+    N: int,
     smooth_amplitude: float,
     sigmas_range: tuple | list | float,
     nb_gaussian: int,
@@ -40,7 +40,7 @@ def compute_smooth(
     Generate a smooth 2D array with Gaussian blobs.
 
     Args:
-        dim (tuple): Dimensions (rows, columns) of the 2D array.
+        N (tuple): Size of the squared 2D array.
         values_range (tuple): Range (min, max) for the random values.
         sigmas_range (tuple | list | float): Range or value for standard deviations.
         nb_gaussian (int): Number of Gaussian blobs.
@@ -62,16 +62,16 @@ def compute_smooth(
     amplitudes = np.random.uniform(-1, 1, size=nb_gaussian)
     centers = (1 - 1.5 * np.max(sigmas)) * np.random.uniform(-1, 1, (nb_gaussian, 2))
 
-    x = np.linspace(-1, 1, dim[0])
-    y = np.linspace(-1, 1, dim[1])
+    x = np.linspace(-1, 1, N)
+    y = np.linspace(-1, 1, N)
     x, y = np.meshgrid(x, y)
     grid_points = np.vstack((x.flatten(), y.flatten())).T
 
-    smooth = np.zeros(dim)
+    smooth = np.zeros((N, N))
     for s, c, a in zip(sigmas, centers, amplitudes):
         smooth += a * np.exp(
             -np.sum((grid_points - c) ** 2, axis=1) / (2 * s**2)
-        ).reshape(dim)
+        ).reshape((N, N))
 
     smooth = smooth_amplitude * smooth / np.max(np.abs(smooth))
 
@@ -94,22 +94,3 @@ def compute_y(y0: np.ndarray, psnr: int) -> np.ndarray:
     mse = 10 ** (mse_db / 10)
     noise = np.random.normal(0, np.sqrt(mse / 2), y0.shape)
     return y0 + noise
-
-
-# class SparseSmoothSignal:
-#     def __init__(
-#         self, dim, sparse_range, smooth_range, sparse_density, sigmas_range, nb_gausian
-#     ) -> None:
-#         self.dim = dim
-#         self.sparse_range = sparse_range
-#         self.smooth_range = smooth_range
-#         self.sparse_density = sparse_density
-#         self.sigmas_range = sigmas_range
-#         self.nb_gausian = nb_gausian
-
-#         self.sparse = None
-#         self.compute_sparse()
-#         self.smooth = None
-#         self.compute_smooth()
-
-#         self.signal = self.sparse + self.smooth

@@ -36,7 +36,7 @@ def coupled_solve(
     Returns:
         tuple: A tuple containing two NumPy arrays - x1 and x2, which are solutions to the optimization problem.
     """
-    l22_loss = (1 / 2) * SquaredL2Norm(op.dim_out).asloss(y)
+    l22_loss = (1 / 2) * SquaredL2Norm(dim=op.dim_out).asloss(y)
     F = l22_loss * hstack([op.phi, op.phi])
 
     if lambda2 != 0.0:
@@ -90,32 +90,25 @@ def decoupled_solve(
 
     if cogram_id:
         if isinstance(l2operator, LinOp):
-            raise NotImplementedError
-            # l22_loss = (1 / 2) * QuadraticFunc(
-            #     (1, op.dim_out),
-            #     Q=op.phi
-            #     * l2operator.gram()
-            #     * op.phi.adjoint()  # op.phi.T ??
-            #     * (
-            #         IdentityOp(op.dim_out)
-            #         + lambda2
-            #         * op.phi
-            #         * l2operator.gram()
-            #         * op.phi.adjoint()  # op.phi.T ??
-            #     ).dagger(damp=0),
-            # ).asloss(y)
-
+            A = op.phi * l2operator.gram() * op.phi.T
+            l22_loss = (1 / 2) * QuadraticFunc(
+                (1, op.dim_out),
+                Q=A * (IdentityOp(op.dim_out) + lambda2 * A).dagger(damp=0),
+            ).asloss(y)
         else:
             l22_loss = (1 / 2) * SquaredL2Norm(op.dim_out).asloss(y)
 
     else:
         if isinstance(l2operator, LinOp):
-            raise NotImplementedError
-
+            A = op.phi.cogram().dagger(damp=0) * op.phi * l2operator.gram() * op.phi.T
+            l22_loss = (1 / 2) * QuadraticFunc(
+                (1, op.dim_out),
+                Q=A * (op.phi.cogram() + lambda2 * A).dagger(damp=0),
+            ).asloss(y)
         else:
             l22_loss = (1 / 2) * QuadraticFunc(
                 (1, op.dim_out),
-                Q=(lambda2 * IdentityOp(op.dim_out) + op.phi.cogram()).dagger(damp=0),
+                Q=(op.phi.cogram() + lambda2 * IdentityOp(op.dim_out)).dagger(damp=0),
             ).asloss(y)
 
     if lambda1 == 0.0:
@@ -134,7 +127,7 @@ def decoupled_solve(
     x1 = pgd.solution()
     if isinstance(l2operator, LinOp):
         x2 = -(op.phi.gram() + lambda2 * l2operator.gram()).pinv(
-            op.phi.adjoint(op.phi.apply(x1) - y)
+            op.phi.adjoint(op.phi.apply(x1) - y), damp=0
         )
     else:
         x2 = -op.phi.pinv(op.phi.apply(x1) - y, damp=lambda2)

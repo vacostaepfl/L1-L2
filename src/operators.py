@@ -9,28 +9,31 @@ from matplotlib.axes import Axes
 
 class NuFFT:
     def __init__(
-        self, dim: tuple, L: int | float, theta: float, on_grid: bool, seed: int = False
+        self, N: int, L: int | float, theta: float, on_grid: bool, seed: int = False
     ):
         """
         Initialize the NuFFT object.
 
         Args:
-            dim (tuple): Dimensions of the input data.
+            N (int): Size of the input data.
             L (int | float): The number or proportion of N^2/2 samples to keep in the NuFFT.
             theta (float): Fraction of samples that are Gaussian.
             on_grid (bool): Whether to sample on a grid.
             seed (int, optional): Random seed for reproducibility.
         """
         np.random.seed(seed)
-        self.dim: tuple = dim
-        self.L = round(L * np.prod(self.dim) / 2) if isinstance(L, float) else L
-        assert (
-            self.L <= np.prod(self.dim) / 2
-        ), f"L={self.L} should not be larger than the product of the dimensions ({np.prod(dim)/2})"
+        self.N: int = N
+        even = 1 if self.N % 2 == 0 else 0
+        self.L = L
+        L = (
+            round(L * (self.N**2 // 2 + 1 + even * self.N // 2))
+            if isinstance(L, float)
+            else self.L
+        )
         self.theta: float = theta
         self.on_grid: tuple = on_grid
-        self.nb_gaussian: int = round(self.theta * self.L)
-        self.nb_uniform: int = self.L - self.nb_gaussian
+        self.nb_gaussian: int = round(self.theta * L)
+        self.nb_uniform: int = L - self.nb_gaussian
 
         self.phi: LinOp = None
         self.gaussian_samples: np.ndarray = None
@@ -61,7 +64,7 @@ class NuFFT:
         """
         self.mix_sampling()
         self.phi = pxo.NUFFT.type2(
-            self.samples, self.dim, isign=-1, eps=1e-3, real=True
+            self.samples, (self.N, self.N), isign=-1, eps=1e-3, real=True
         )
 
     def mix_sampling(self):
@@ -84,10 +87,11 @@ class NuFFT:
         Generate uniform samples.
         """
         if self.on_grid:
-            grid_size = (self.dim[0] // 2, self.dim[1])
+            grid_size = ((self.N + 2) // 2, self.N)
             pdf = np.ones(grid_size).T.ravel()
             if self.gaussian_indices is not None:
                 pdf[self.gaussian_indices] = 0
+            pdf[grid_size[0] : self.N] = 0
             pdf /= pdf.sum()
 
             self.uniform_indices = np.random.choice(
@@ -97,8 +101,8 @@ class NuFFT:
                 replace=False,
             )
             x, y = np.unravel_index(self.uniform_indices, grid_size)
-            self.uniform_samples = (2 * np.pi / self.dim[0]) * np.stack(
-                [x, y - self.dim[1] // 2]
+            self.uniform_samples = (2 * np.pi / self.N) * np.stack(
+                [x, y - self.N // 2]
             ).T
         else:
             self.uniform_samples = np.random.uniform(
@@ -110,13 +114,14 @@ class NuFFT:
         Generate Gaussian samples.
         """
         if self.on_grid:
-            grid_size = (self.dim[0] // 2, self.dim[1])
-            std_dev_x = self.dim[0] / 10
-            std_dev_y = self.dim[1] / 10
+            grid_size = ((self.N + 2) // 2, self.N)
+            std_dev_x = self.N / 10
+            std_dev_y = self.N / 10
             x, y = np.meshgrid(np.arange(grid_size[0]), np.arange(grid_size[1]))
             pdf_x = np.exp(-0.5 * (x**2) / std_dev_x**2)
             pdf_y = np.exp(-0.5 * ((y - grid_size[1] / 2) ** 2) / std_dev_y**2)
             pdf = pdf_x * pdf_y
+            pdf[grid_size[0] : self.N, 0] = 0
             pdf /= pdf.sum()
 
             self.gaussian_indices = np.random.choice(
@@ -126,8 +131,8 @@ class NuFFT:
                 replace=False,
             )
             x, y = np.unravel_index(self.gaussian_indices, grid_size)
-            self.gaussian_samples = (2 * np.pi / self.dim[0]) * np.stack(
-                [x, y - self.dim[1] // 2]
+            self.gaussian_samples = (2 * np.pi / self.N) * np.stack(
+                [x, y - self.N // 2]
             ).T
         else:
             gaussian_samples = np.random.multivariate_normal(
@@ -177,6 +182,7 @@ class NuFFT:
         )
         ax.grid(visible=True)
         ax.set_axisbelow(True)
-        fig.suptitle(
-            f"Samples: L={2*self.L/np.prod(self.dim):.0%}", verticalalignment="top"
-        )
+        if isinstance(self.L, float):
+            fig.suptitle(f"Samples: L={self.L:.0%}", verticalalignment="top")
+        else:
+            fig.suptitle(f"Samples: L={self.L:.0f}", verticalalignment="top")
