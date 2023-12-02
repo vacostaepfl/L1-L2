@@ -60,7 +60,7 @@ class NuFFT:
         """
         self.mix_sampling()
         self.phi = pxo.NUFFT.type2(
-            self.samples, (self.N, self.N), isign=-1, eps=1e-3, real=True
+            self.samples, (self.N, self.N), isign=-1, eps=1e-12, real=True
         )
 
     def mix_sampling(self):
