@@ -118,7 +118,9 @@ class NuFFT:
             std_dev_y = self.N / 10
             x, y = np.meshgrid(np.arange(grid_size[0]), np.arange(grid_size[1]))
             pdf_x = np.exp(-0.5 * (x**2) / std_dev_x**2)
-            pdf_y = np.exp(-0.5 * ((y - grid_size[1] // 2) ** 2) / std_dev_y**2)
+            pdf_y = np.exp(
+                -0.5 * ((y - grid_size[1] // 2 + self.even) ** 2) / std_dev_y**2
+            )
             pdf = pdf_x * pdf_y
 
             # remove half x-axis
@@ -126,9 +128,6 @@ class NuFFT:
             # remove half pi-axis
             if self.even:
                 pdf[-grid_size[0] :, grid_size[0] - 1] = 0
-                # remove (pi, 0), (pi,pi)
-                pdf[grid_size[1] - 1, grid_size[0] - 1] = 0
-                pdf[self.N // 2 - 1, grid_size[0] - 1] = 0
 
             pdf /= pdf.sum()
 
