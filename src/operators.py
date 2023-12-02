@@ -84,12 +84,17 @@ class NuFFT:
         Generate uniform samples.
         """
         if self.on_grid:
-            grid_size = ((self.N + 2) // 2, self.N - self.even)
+            grid_size = (self.N // 2 + 1, self.N)
             pdf = np.ones(grid_size).T.ravel()
             if self.gaussian_indices is not None:
                 pdf[self.gaussian_indices] = 0
-            # remove half axis
-            pdf[grid_size[0] - 1 - self.even : self.N - self.even] = 0
+
+            # remove half 0-axis
+            pdf[grid_size[0] - 1 - self.even : self.N] = 0
+            # remove half pi-axis
+            if self.even:
+                pdf[-grid_size[0] :] = 0
+
             pdf /= pdf.sum()
 
             self.uniform_indices = np.random.choice(
@@ -99,12 +104,9 @@ class NuFFT:
                 replace=False,
             )
             x, y = np.unravel_index(self.uniform_indices, grid_size)
-            self.uniform_samples = np.stack(
-                [
-                    2 * np.pi / (self.N + self.even) * x,
-                    2 * np.pi / (self.N - self.even) * (y - self.N // 2 + self.even),
-                ]
-            ).T
+            self.uniform_samples = (
+                2 * np.pi / self.N * np.stack([x, (y - self.N // 2 + self.even)]).T
+            )
         else:
             self.uniform_samples = np.random.uniform(
                 -np.pi, np.pi, (self.nb_uniform, 2)
@@ -115,17 +117,23 @@ class NuFFT:
         Generate Gaussian samples.
         """
         if self.on_grid:
-            grid_size = ((self.N) // 2 + 1, self.N - self.even)
-            std = self.N / 10
-            std_dev_x = self.N / (self.N - self.even) * std
-            std_dev_y = self.N / (self.N + self.even) * std
+            grid_size = ((self.N) // 2 + 1, self.N)
+            std_dev_x = self.N / 10
+            std_dev_y = self.N / 10
             x, y = np.meshgrid(np.arange(grid_size[0]), np.arange(grid_size[1]))
             pdf_x = np.exp(-0.5 * (x**2) / std_dev_x**2)
             pdf_y = np.exp(-0.5 * ((y - grid_size[1] // 2) ** 2) / std_dev_y**2)
             pdf = pdf_x * pdf_y
 
-            # remove half axis
-            pdf[grid_size[0] - 1 - self.even : self.N - self.even, 0] = 0
+            # remove half x-axis
+            pdf[grid_size[0] - 1 - self.even : self.N, 0] = 0
+            # remove half pi-axis
+            if self.even:
+                pdf[-grid_size[0] :, grid_size[0] - 1] = 0
+                # remove (pi, 0), (pi,pi)
+                pdf[grid_size[1] - 1, grid_size[0] - 1] = 0
+                pdf[self.N // 2 - 1, grid_size[0] - 1] = 0
+
             pdf /= pdf.sum()
 
             self.gaussian_indices = np.random.choice(
@@ -135,12 +143,9 @@ class NuFFT:
                 replace=False,
             )
             x, y = np.unravel_index(self.gaussian_indices, grid_size)
-            gaussian_samples = np.stack(
-                [
-                    2 * np.pi / (self.N + self.even) * x,
-                    2 * np.pi / (self.N - self.even) * (y - self.N // 2 + self.even),
-                ]
-            ).T
+            gaussian_samples = (
+                2 * np.pi / self.N * np.stack([x, y - self.N // 2 + self.even]).T
+            )
             self.gaussian_samples = np.vstack([[0, 0], gaussian_samples])
         else:
             gaussian_samples = np.random.multivariate_normal(
@@ -186,11 +191,11 @@ class NuFFT:
             )
         ax.set_xticks(xticks, labels=[str(x / np.pi) + r"$\pi$" for x in xticks])
         ax.set_yticks(yticks, labels=[str(x / np.pi) + r"$\pi$" for x in yticks])
-        ax.legend(
-            title="on-grid" if self.on_grid else "off-grid",
-            handletextpad=0,
-            fontsize="x-small",
-        )
+        # ax.legend(
+        #     title="on-grid" if self.on_grid else "off-grid",
+        #     handletextpad=0,
+        #     fontsize="x-small",
+        # )
         ax.grid(visible=True)
         ax.set_axisbelow(True)
         if isinstance(self.L, float):
