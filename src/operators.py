@@ -25,11 +25,7 @@ class NuFFT:
         self.N: int = N
         self.even = 1 if self.N % 2 == 0 else 0
         self.L = L
-        L = (
-            round(self.L * (N**2 // 2 + (1 - self.even)))
-            if isinstance(L, float)
-            else self.L
-        )
+        L = round(self.L * ((N**2 - 1) // 2)) if isinstance(L, float) else self.L
         self.theta: float = theta
         self.on_grid: tuple = on_grid
         self.nb_gaussian: int = max(round(self.theta * L), 1)  # must include (0,0)
