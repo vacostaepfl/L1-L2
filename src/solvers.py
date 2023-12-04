@@ -1,9 +1,19 @@
+from matplotlib.font_manager import X11FontDirectories
 import numpy as np
 from pyxu.abc import LinOp, QuadraticFunc
-from pyxu.operator import SquaredL2Norm, L1Norm, hstack, NullFunc, IdentityOp
+from pyxu.operator import (
+    SquaredL2Norm,
+    L1Norm,
+    hstack,
+    NullFunc,
+    IdentityOp,
+    DiagonalOp,
+)
 from pyxu.opt.solver import PGD
 from pyxu.opt.stop import MaxIter, RelError
 from src.operators import NuFFT
+
+import time
 
 
 def solve(
@@ -80,55 +90,63 @@ def decoupled_solve(
     Returns:
         tuple: A tuple containing two NumPy arrays - x1 and x2, which are solutions to the optimization problem.
     """
+    start = time.time()
+    print(start)
     lambda2 *= np.linalg.norm(op.phi.adjoint(y), ord=np.inf)
     lambda1 *= np.linalg.norm(op.phi.adjoint(y), ord=np.inf)
 
     # Co-Gram operator = Indentity ?
-    cogram_id = np.allclose(
-        op.phi.cogram().asarray(), op.dim_in / 2 * np.eye(op.dim_out)
-    )
-
+    random_y = np.random.rand(op.dim_out)
+    vec = np.array([op.dim_in, 1e-12, *[op.dim_in / 2] * (op.dim_out - 2)])
+    diag_op = DiagonalOp(vec)
+    cogram_id = np.allclose(op.phi.cogram().apply(random_y), diag_op.apply(random_y))
+    print("check id", time.time() - start)
     if cogram_id:
+        print("Co-Gram Identity")
         if isinstance(l2operator, LinOp):
-            A = op.phi * l2operator.gram() * op.phi.T
-            l22_loss = (1 / 2) * QuadraticFunc(
-                (1, op.dim_out),
-                Q=A * (IdentityOp(op.dim_out) + lambda2 * A).dagger(damp=0),
-            ).asloss(y)
+            B = DiagonalOp(1 / vec) * op.phi * l2operator.gram() * op.phi.T
+            Q_Linop = LinOp.from_array(
+                (B * (diag_op + lambda2 * B).dagger(damp=0)).asarray()
+            )
         else:
-            l22_loss = (1 / 2) * SquaredL2Norm(op.dim_out).asloss(y)
+            vec = 1 / (
+                np.array([op.dim_in, 1e-12, *[op.dim_in / 2] * (op.dim_out - 2)])
+                + lambda2 * np.ones(op.dim_out)
+            )
+            Q_Linop = DiagonalOp(vec)
 
     else:
         if isinstance(l2operator, LinOp):
-            A = op.phi.cogram().dagger(damp=0) * op.phi * l2operator.gram() * op.phi.T
-            l22_loss = (1 / 2) * QuadraticFunc(
-                (1, op.dim_out),
-                Q=A * (op.phi.cogram() + lambda2 * A).dagger(damp=0),
-            ).asloss(y)
+            B = op.phi.cogram().dagger(damp=0) * op.phi * l2operator.gram() * op.phi.T
+            Q_Linop = LinOp.from_array(
+                (B * (op.phi.cogram() + lambda2 * B).dagger(damp=0)).asarray()
+            )
         else:
-            l22_loss = (1 / 2) * QuadraticFunc(
-                (1, op.dim_out),
-                Q=(op.phi.cogram() + lambda2 * IdentityOp(op.dim_out)).dagger(damp=0),
-            ).asloss(y)
+            Q_Linop = LinOp.from_array(
+                (op.phi.cogram() + lambda2 * IdentityOp(op.dim_out))
+                .dagger(damp=0)
+                .asarray()
+            )
+    print("compute l2 op", time.time() - start)
+    l22_loss = (1 / 2) * QuadraticFunc((1, op.dim_out), Q=Q_Linop).asloss(y)
+    F = l22_loss * op.phi
+    F.diff_lipschitz = F.estimate_diff_lipschitz(method="svd")
+    print("compute lip", time.time() - start)
 
     if lambda1 == 0.0:
         G = NullFunc(op.dim_in)
-    elif cogram_id and not isinstance(l2operator, LinOp):
-        G = lambda1 / lambda2 * (lambda2 + op.dim_in / 2) * L1Norm(op.dim_in)
     else:
         G = lambda1 / lambda2 * L1Norm(op.dim_in)
-
-    F = l22_loss * op.phi
-    F.diff_lipschitz = F.estimate_diff_lipschitz(method="svd")
+    print("compute l1", time.time() - start)
 
     pgd = PGD(f=F, g=G, verbosity=500)
     sc = MaxIter(n=100) & RelError(eps=1e-4)
     pgd.fit(x0=np.zeros(op.dim_in), stop_crit=sc)
+    print("solve x1", time.time() - start)
     x1 = pgd.solution()
     if isinstance(l2operator, LinOp):
-        x2 = -(op.phi.gram() + lambda2 * l2operator.gram()).pinv(
-            op.phi.adjoint(op.phi.apply(x1) - y), damp=0
-        )
+        x2 = (-op.phi.T * (diag_op + lambda2 * B).dagger(damp=0)).apply(op(x1) - y)
     else:
         x2 = -op.phi.pinv(op.phi.apply(x1) - y, damp=lambda2)
+    print("compute x2", time.time() - start)
     return x1, x2

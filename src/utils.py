@@ -116,7 +116,7 @@ def plot_results(
         ]
     )
 
-    halfranges = np.max(signals, axis=(0, 2, 3))
+    halfranges = np.max(np.abs(signals), axis=(0, 2, 3))
     for i, (subfig, title) in enumerate(
         zip(
             subfig_signals.subfigures(2, 1, hspace=-0.3),
