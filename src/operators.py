@@ -28,9 +28,10 @@ class NuFFT:
         L = round(self.L * ((N**2 - 1) // 2)) if isinstance(L, float) else self.L
         self.theta: float = theta
         self.on_grid: tuple = on_grid
-        self.nb_gaussian: int = max(round(self.theta * L), 1)  # must include (0,0)
+        self.nb_gaussian: int = round(self.theta * L)
         self.nb_uniform: int = L - self.nb_gaussian
-
+        if on_grid:
+            self.grid_size = ((self.N) // 2 + 1, self.N)
         self.phi: LinOp = None
         self.gaussian_samples: np.ndarray = None
         self.gaussian_indices: np.ndarray = None
@@ -60,46 +61,75 @@ class NuFFT:
         """
         self.mix_sampling()
         self.phi = pxo.NUFFT.type2(
-            self.samples, (self.N, self.N), isign=-1, eps=1e-12, real=True
+            self.samples, (self.N, self.N), isign=-1, eps=1e-15, real=True
         )
 
     def mix_sampling(self):
         """
         Generate a mixture of Gaussian and uniform samples for NUFFT.
         """
-        if self.nb_uniform > 0:
+        if self.nb_uniform > 0 and self.nb_gaussian > 0:
             self.gaussian_sampling()
             self.uniform_sampling()
-            self.samples = np.concatenate([self.gaussian_samples, self.uniform_samples])
-        else:
+            self.samples = np.array(
+                np.concatenate([self.gaussian_samples, self.uniform_samples])
+            )
+            # self.samples = np.array(
+            #     sorted(
+            #         np.concatenate([self.gaussian_samples, self.uniform_samples]),
+            #         key=(lambda x: (x[0], x[1])),
+            #     )
+            # )
+            self.samples = np.concatenate(
+                [np.zeros((1, 2)), self.samples]
+            )  # must include (0,0)
+
+        elif self.nb_uniform > 0:
+            self.uniform_sampling()
+            self.samples = self.uniform_samples
+            # self.samples = np.array(
+            #     sorted(self.uniform_samples, key=(lambda x: (x[0], x[1])))
+            # )
+            self.samples = np.concatenate(
+                [np.zeros((1, 2)), self.samples]
+            )  # must include (0,0)
+
+        elif self.nb_gaussian > 0:
             self.gaussian_sampling()
             self.samples = self.gaussian_samples
+            # self.samples = np.array(
+            #     sorted(self.gaussian_samples, key=(lambda x: (x[0], x[1])))
+            # )
+            self.samples = np.concatenate(
+                [np.zeros((1, 2)), self.samples]
+            )  # must include (0,0)
+        else:
+            self.samples = np.zeros((1, 2))
 
     def uniform_sampling(self):
         """
         Generate uniform samples.
         """
         if self.on_grid:
-            grid_size = (self.N // 2 + 1, self.N)
-            pdf = np.ones(grid_size).T.ravel()
+            pdf = np.ones(self.grid_size).T.ravel()
             if self.gaussian_indices is not None:
                 pdf[self.gaussian_indices] = 0
 
             # remove half 0-axis
-            pdf[grid_size[0] - 1 - self.even : self.N] = 0
+            pdf[self.grid_size[0] - 1 - self.even : self.N] = 0
             # remove half pi-axis
             if self.even:
-                pdf[-grid_size[0] :] = 0
+                pdf[-self.grid_size[0] :] = 0
 
             pdf /= pdf.sum()
 
             self.uniform_indices = np.random.choice(
-                grid_size[0] * grid_size[1],
+                self.grid_size[0] * self.grid_size[1],
                 self.nb_uniform,
                 p=pdf,
                 replace=False,
             )
-            x, y = np.unravel_index(self.uniform_indices, grid_size)
+            x, y = np.unravel_index(self.uniform_indices, self.grid_size)
             self.uniform_samples = (
                 2 * np.pi / self.N * np.stack([x, (y - self.N // 2 + self.even)]).T
             )
@@ -113,44 +143,42 @@ class NuFFT:
         Generate Gaussian samples.
         """
         if self.on_grid:
-            grid_size = ((self.N) // 2 + 1, self.N)
             std_dev_x = self.N / 10
             std_dev_y = self.N / 10
-            x, y = np.meshgrid(np.arange(grid_size[0]), np.arange(grid_size[1]))
+            x, y = np.meshgrid(
+                np.arange(self.grid_size[0]), np.arange(self.grid_size[1])
+            )
             pdf_x = np.exp(-0.5 * (x**2) / std_dev_x**2)
             pdf_y = np.exp(
-                -0.5 * ((y - grid_size[1] // 2 + self.even) ** 2) / std_dev_y**2
+                -0.5 * ((y - self.grid_size[1] // 2 + self.even) ** 2) / std_dev_y**2
             )
             pdf = pdf_x * pdf_y
 
             # remove half x-axis
-            pdf[grid_size[0] - 1 - self.even : self.N, 0] = 0
+            pdf[self.grid_size[0] - 1 - self.even : self.N, 0] = 0
             # remove half pi-axis
             if self.even:
-                pdf[-grid_size[0] :, grid_size[0] - 1] = 0
+                pdf[-self.grid_size[0] :, self.grid_size[0] - 1] = 0
 
             pdf /= pdf.sum()
 
             self.gaussian_indices = np.random.choice(
-                grid_size[0] * grid_size[1],
+                self.grid_size[0] * self.grid_size[1],
                 self.nb_gaussian - 1,
                 p=pdf.T.ravel(),
                 replace=False,
             )
-            x, y = np.unravel_index(self.gaussian_indices, grid_size)
-            gaussian_samples = (
+            x, y = np.unravel_index(self.gaussian_indices, self.grid_size)
+            self.gaussian_samples = (
                 2 * np.pi / self.N * np.stack([x, y - self.N // 2 + self.even]).T
             )
-            self.gaussian_samples = np.vstack([[0, 0], gaussian_samples])
+
         else:
             gaussian_samples = np.random.multivariate_normal(
                 [0, 0], [[1, 0], [0, 1]], self.nb_gaussian
             )
-            self.gaussian_samples = np.vstack(
-                [
-                    [0, 0],
-                    np.pi * gaussian_samples / (1.5 * np.max(np.abs(gaussian_samples))),
-                ]
+            self.gaussian_samples = (
+                np.pi * gaussian_samples / (1.5 * np.max(np.abs(gaussian_samples)))
             )
 
     def plot_samples(self, fig: Figure = None, ax: Axes = None):
@@ -184,13 +212,19 @@ class NuFFT:
                 color="tab:orange",
                 label="Uniform",
             )
+        ax.scatter(
+            x=0,
+            y=0,
+            s=2,
+            color="red",
+        )
         ax.set_xticks(xticks, labels=[str(x / np.pi) + r"$\pi$" for x in xticks])
         ax.set_yticks(yticks, labels=[str(x / np.pi) + r"$\pi$" for x in yticks])
-        # ax.legend(
-        #     title="on-grid" if self.on_grid else "off-grid",
-        #     handletextpad=0,
-        #     fontsize="x-small",
-        # )
+        ax.legend(
+            title="on-grid" if self.on_grid else "off-grid",
+            handletextpad=0,
+            fontsize="x-small",
+        )
         ax.grid(visible=True)
         ax.set_axisbelow(True)
         if isinstance(self.L, float):
