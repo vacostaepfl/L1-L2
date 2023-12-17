@@ -87,7 +87,7 @@ def coupled_solve(
     else:
         G = hstack([lambda1 * L1Norm(op.dim_in), NullFunc(op.dim_in)])
 
-    pgd = PGD(f=F, g=G, verbosity=10e6)
+    pgd = PGD(f=F, g=G, verbosity=500)
     sc = MaxIter(n=100) & RelError(eps=1e-4)
     pgd.fit(x0=np.zeros(2 * op.dim_in), stop_crit=sc)
     x = pgd.solution()
