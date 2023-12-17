@@ -423,11 +423,6 @@ def difference(
     return fig
 
 
-def append_to_txt(filename, content):
-    with open(filename, "a") as file:
-        file.write(content)
-
-
 def sparse_error(
     N,
     laplacian,
