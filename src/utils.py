@@ -7,6 +7,8 @@ from src.operators import NuFFT
 from IPython.display import display
 from ipywidgets import widgets
 import os
+from pyxu.abc import LinOp
+import csv
 
 EXP_PATH = "exps"
 
@@ -20,21 +22,22 @@ def plot_signal(sparse: np.ndarray, smooth: np.ndarray) -> None:
         smooth (np.ndarray): A NumPy array representing the smooth signal.
     """
     signal = sparse + smooth
-    fig, axes = plt.subplots(1, 3, figsize=(10, 10))
+    fig, axes = plt.subplots(1, 3, figsize=(20, 20))
     for ax, img, title in zip(
         axes, [sparse, smooth, signal], ["Sparse", "Smooth", "Signal"]
     ):
-        ax.set_title(title)
+        ax.set_title(title, fontsize=20)
         ax.set_xticks([])
         ax.set_yticks([])
         divnorm = colors.CenteredNorm(vcenter=0.0)
         im = ax.imshow(img, cmap="seismic", norm=divnorm)
         divider = make_axes_locatable(ax)
         cax1 = divider.append_axes("right", size="5%", pad=0.05)
-        plt.colorbar(im, cax=cax1)
+        cbar = plt.colorbar(im, cax=cax1)
+        cbar.ax.tick_params(labelsize=16)
     # fig.subplots_adjust(hspace=0.3)
     fig.tight_layout()
-    plt.show()
+    return fig
 
 
 def nmse(x1: np.ndarray, x2: np.ndarray) -> float:
@@ -71,7 +74,8 @@ def plot_results(
     lambda1: float,
     lambda2: float,
     op: NuFFT,
-    coupled: bool = True,
+    coupled: bool,
+    laplacian: bool,
 ):
     """
     Plot the results of a coupled or decoupled problem.
@@ -87,11 +91,13 @@ def plot_results(
     fig = plt.figure(figsize=(10, 5))
     fig.set_facecolor("0.85")
     fig.suptitle(
-        str("Coupled" if coupled else "Decoupled")
-        + r" problem with $\lambda_1=$"
+        str("Coupled " if coupled else "Decoupled ")
+        + "problem "
+        + str("with Laplacian" if laplacian else "without Laplacian")
+        + r" ($\lambda_1=$"
         + str(lambda1)
         + r" & $\lambda_2=$"
-        + str(lambda2),
+        + f"{lambda2})",
         y=1,
         fontsize="xx-large",
         verticalalignment="bottom",
@@ -231,3 +237,319 @@ def save_fig(
     filename = directory + name
     fig.savefig(filename, bbox_inches="tight")
     return filename
+
+
+def objective_func(
+    op: NuFFT,
+    laplacian_op: LinOp,
+    y: np.ndarray,
+    sparse_rcstr: np.ndarray,
+    smooth_rcstr: np.ndarray,
+    lambda1: float,
+    lambda2: float,
+):
+    """
+    Calculate the objective function composed of three terms:
+    - Data fidelity term: measures the difference between the predicted value and the actual value.
+    - Smoothness regularization term: encourages smoothness in the reconstructed signal.
+    - Sparsity regularization term: promotes sparsity in the reconstructed signal.
+
+    Args:
+    - op (NuFFT): Operator
+    - laplacian (LinOP): Laplacian Operator.
+    - y (np.ndarray): Actual values.
+    - sparse_rcstr (np.ndarray): Sparse reconstruction.
+    - smooth_rcstr (np.ndarray): Smooth reconstruction.
+    - lambda1 (float): Weight for sparsity regularization.
+    - lambda2 (float): Weight for smoothness regularization.
+
+    Returns:
+    - tuple: Three terms of the objective
+    """
+    return (
+        1
+        / 2
+        * np.sum((op(sparse_rcstr.reshape(-1) + smooth_rcstr.reshape(-1)) - y) ** 2),
+        (lambda2 / 2) * np.sum(laplacian_op.apply(smooth_rcstr.reshape(-1)) ** 2),
+        lambda1 * np.sum(np.abs(sparse_rcstr)),
+    )
+
+
+def compare(
+    N,
+    laplacian,
+    lambda1,
+    lambda2,
+    sparse_rcstr_coupled,
+    sparse_rcstr_decoupled,
+    smooth_rcstr_coupled,
+    smooth_rcstr_decoupled,
+    signal_rcstr_coupled,
+    signal_rcstr_decoupled,
+):
+    """
+    Compare different reconstructions.
+
+    Args:
+    - N (int): Size of the signal.
+    - laplacian (bool): Flag indicating whether Laplacian regularization was used.
+    - sparse_rcstr_coupled (numpy.ndarray): Sparse coupled reconstruction.
+    - sparse_rcstr_decoupled (numpy.ndarray): Sparse decoupled reconstruction.
+    - smooth_rcstr_coupled (numpy.ndarray): Smooth coupled reconstruction.
+    - smooth_rcstr_decoupled (numpy.ndarray): Smooth decoupled reconstruction.
+    - signal_rcstr_coupled (numpy.ndarray): Signal coupled reconstruction.
+    - signal_rcstr_decoupled (numpy.ndarray): Signal decoupled reconstruction.
+
+    Returns:
+    - matplotlib.figure.Figure: Figure object displaying the reconstructions.
+    """
+    fig = plt.figure(figsize=(15, 18))
+    if laplacian:
+        title = "Reconstruction with Laplacian "
+    else:
+        title = "Reconstruction without Laplacian "
+    fig.suptitle(
+        title + r"($\lambda_1=$" + str(lambda1) + r" & $\lambda_2=$" + f"{lambda2})",
+        y=1.03,
+        fontsize=24,
+        x=0.525,
+    )
+    figs = fig.subfigures(3, 1, hspace=-0.05)
+    for i, (f, signals, title) in enumerate(
+        zip(
+            figs,
+            [
+                (sparse_rcstr_coupled, sparse_rcstr_decoupled),
+                (smooth_rcstr_coupled, smooth_rcstr_decoupled),
+                (signal_rcstr_coupled, signal_rcstr_decoupled),
+            ],
+            ["Sparse Reconstruction", "Smooth Reconstruction", "Signal Reconstruction"],
+        )
+    ):
+        axes = f.subplots(1, 2)
+        plt.subplots_adjust(wspace=0)
+        f.suptitle(title, fontsize=20)
+        for j in range(2):
+            divnorm = colors.CenteredNorm(
+                vcenter=0.0,
+                halfrange=max(np.max(np.abs(signals[0])), np.max(np.abs(signals[1]))),
+            )
+            im = axes[j].imshow(
+                signals[j],
+                cmap="seismic",
+                norm=divnorm,
+            )
+            axes[j].set_yticks([])
+            axes[j].set_xticks([])
+            divider = make_axes_locatable(axes[j])
+            if j == 1:
+                axes[j].set_title("Decoupled", fontsize=16)
+                cax = divider.append_axes(position="right", size="5%", pad=0.5)
+                cbar = f.colorbar(im, cax=cax)
+                cbar.ax.tick_params(labelsize=16)
+            else:
+                axes[j].set_title("Coupled", fontsize=16)
+                cax = divider.append_axes(position="left", size="5%", pad=0.5)
+                cax.axis("off")
+        if i == 2:
+            f.text(
+                s=f"Signal size: {(N,N)}",
+                x=0.5,
+                horizontalalignment="center",
+                verticalalignment="bottom",
+                fontsize=16,
+                y=0,
+            )
+    return fig
+
+
+def difference(
+    N,
+    laplacian,
+    lambda1,
+    lambda2,
+    sparse_rcstr_coupled,
+    sparse_rcstr_decoupled,
+    smooth_rcstr_coupled,
+    smooth_rcstr_decoupled,
+):
+    if laplacian:
+        title = "Reconstruction difference with Laplacian "
+    else:
+        title = "Reconstruction difference without Laplacian "
+
+    fig, axes = plt.subplots(1, 2, figsize=(15, 7))
+    fig.suptitle(
+        title + r"($\lambda_1=$" + str(lambda1) + r" & $\lambda_2=$" + f"{lambda2})",
+        fontsize=20,
+    )
+    for j, signal in enumerate(
+        zip(
+            [
+                sparse_rcstr_coupled - sparse_rcstr_decoupled,
+                smooth_rcstr_coupled - smooth_rcstr_decoupled,
+            ]
+        )
+    ):
+        divnorm = colors.CenteredNorm(vcenter=0.0, halfrange=np.max(np.abs(signal)))
+        im = axes[j].imshow(
+            signal[0],
+            cmap="seismic",
+            norm=divnorm,
+        )
+        axes[j].set_yticks([])
+        axes[j].set_xticks([])
+
+        divider = make_axes_locatable(axes[j])
+        if j == 0:
+            axes[j].set_title("Sparse", fontsize=16)
+            cax = divider.append_axes(position="left", size="5%", pad=0.5)
+            cbar = plt.colorbar(im, cax=cax, location="left")
+        else:
+            axes[j].set_title("Smooth", fontsize=16)
+            cax = divider.append_axes(position="right", size="5%", pad=0.5)
+            cbar = plt.colorbar(im, cax=cax, location="right")
+        cbar.ax.tick_params(labelsize=16)
+
+        fig.text(
+            s=f"Signal size: {(N,N)}",
+            x=0.5,
+            horizontalalignment="center",
+            verticalalignment="bottom",
+            fontsize=16,
+            y=0.05,
+        )
+
+    return fig
+
+
+def append_to_txt(filename, content):
+    with open(filename, "a") as file:
+        file.write(content)
+
+
+def sparse_error(
+    N,
+    laplacian,
+    lambda1,
+    lambda2,
+    sparse_signal,
+    sparse_rcstr_coupled,
+    sparse_rcstr_decoupled,
+):
+    fig = plt.figure(figsize=(16, 15))
+    if laplacian:
+        title = "Sparse Error with Laplacian "
+    else:
+        title = "Sparse Error without Laplacian "
+    fig.suptitle(
+        title + r"($\lambda_1=$" + str(lambda1) + r" & $\lambda_2=$" + f"{lambda2})",
+        y=1,
+        fontsize=24,
+    )
+    figs = fig.subfigures(2, 1, hspace=-0.15)
+
+    for i, (f, peaks) in enumerate(zip(figs, ["On spikes", "Off spikes"])):
+        plt.subplots_adjust(wspace=0.1)
+        axes = f.subplots(1, 2)
+        if i == 0:
+            divnorm = colors.CenteredNorm(
+                vcenter=0.0,
+                halfrange=max(
+                    np.max(
+                        np.abs(
+                            (sparse_rcstr_coupled - sparse_signal)[sparse_signal != 0]
+                        )
+                    ),
+                    np.max(
+                        np.abs(
+                            (sparse_rcstr_decoupled - sparse_signal)[sparse_signal != 0]
+                        )
+                    ),
+                ),
+            )
+        else:
+            divnorm = colors.CenteredNorm(
+                vcenter=0.0,
+                halfrange=max(
+                    np.max(
+                        np.abs(
+                            (sparse_rcstr_coupled - sparse_signal)[sparse_signal == 0]
+                        )
+                    ),
+                    np.max(
+                        np.abs(
+                            (sparse_rcstr_decoupled - sparse_signal)[sparse_signal == 0]
+                        )
+                    ),
+                ),
+            )
+        for j in range(2):
+            if j == 0:
+                axes[0].set_ylabel(peaks, fontsize=20)
+                sig = sparse_rcstr_coupled - sparse_signal
+                if i == 0:
+                    sig[sparse_signal == 0] = 0
+                    axes[j].set_title("Coupled", fontsize=20)
+                else:
+                    sig[sparse_signal != 0] = 0
+            else:
+                sig = sparse_rcstr_decoupled - sparse_signal
+                if i == 0:
+                    sig[sparse_signal == 0] = 0
+                    axes[j].set_title("Decoupled", fontsize=20)
+                else:
+                    sig[sparse_signal != 0] = 0
+
+            im = axes[j].imshow(
+                sig,
+                cmap="seismic",
+                norm=divnorm,
+            )
+            axes[j].set_yticks([])
+            axes[j].set_xticks([])
+
+        cbar_width = 0.5
+        cbar_x = (1 - cbar_width) / 2
+        cbar_ax = f.add_axes([cbar_x + 0.015, 0.09, cbar_width, 0.03])
+        cbar = plt.colorbar(im, cax=cbar_ax, orientation="horizontal")
+        cbar.ax.tick_params(labelsize=16)
+    f.text(
+        s=f"Signal size: {(N,N)}",
+        x=0.5,
+        horizontalalignment="center",
+        verticalalignment="bottom",
+        fontsize=20,
+        y=-0.04,
+    )
+    return fig
+
+
+def write_to_csv(filename, data):
+    """
+    Write data to a CSV file, appending to existing content or creating a new file with a header row if it's empty.
+
+    Args:
+    - filename (str): The name of the CSV file.
+    - data (list): A list representing a row of data to be written to the CSV file.
+
+    The CSV file will contain the following header:
+    "seed", "size", "coupled", "laplacian", "lambda1", "lambda2", "time", "error", "l2", "l1"
+    """
+    with open(EXP_PATH + filename, "a", newline="") as file:
+        writer = csv.writer(file)
+        if file.tell() == 0:  # Check if the file is empty
+            header = [
+                "seed",
+                "N",
+                "coupled",
+                "laplacian",
+                "lambda1",
+                "lambda2",
+                "time",
+                "error",
+                "l2",
+                "l1",
+            ]
+            writer.writerow(header)  # Write the header only if the file is empty
+        writer.writerow(data)

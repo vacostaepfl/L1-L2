@@ -131,7 +131,7 @@ def decoupled_solve(
         G = lambda1 / lambda2 * L1Norm(op.dim_in)
 
     pgd = PGD(f=F, g=G, verbosity=500)
-    sc = MaxIter(n=100) & RelError(eps=1e-5)
+    sc = MaxIter(n=100) & RelError(eps=1e-4)
     pgd.fit(x0=np.zeros(op.dim_in), stop_crit=sc)
     x1 = pgd.solution()
     x2 = compute_x2(x1, y)

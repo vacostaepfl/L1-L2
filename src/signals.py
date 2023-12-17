@@ -17,13 +17,14 @@ def compute_sparse(
     Returns:
         np.ndarray: Sparse matrix with random values within the specified range.
     """
+    margin = int(0.05 * N)
     value_min, value_max = np.min(values_range), np.max(values_range)
-    spikes = rand(N - 2, N - 2, density, random_state=seed).toarray()
+    spikes = rand(N - 2 * margin, N - 2 * margin, density, random_state=seed).toarray()
     spikes[spikes != 0] = spikes[spikes != 0] * (value_max - value_min) + value_min
 
     return np.pad(
         spikes,
-        ((1, 1), (1, 1)),
+        ((margin, margin), (margin, margin)),
         mode="constant",
         constant_values=0,
     )
