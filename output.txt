@@ -1,0 +1,975 @@
+Coupled
+INFO -- [2023-12-28 13:53:07.345332] Iteration 0
+	iteration: 0
+	N_iter: 1.0
+	RelError[x]: 0.0
+INFO -- [2023-12-28 13:54:53.338866] Iteration 500
+	iteration: 500
+	N_iter: 501.0
+	RelError[x]: 0.00042969151893373784
+INFO -- [2023-12-28 13:55:47.197560] Iteration 757
+	iteration: 757
+	N_iter: 758.0
+	RelError[x]: 9.991987121723947e-05
+INFO -- [2023-12-28 13:55:47.198740] Stopping Criterion satisfied -> END
+Decoupled
+Co-Gram Identity
+sys:1: ResourceWarning: unclosed socket <zmq.Socket(zmq.PUSH) at 0x14de93fa0>
+ResourceWarning: Enable tracemalloc to get the object allocation traceback
+INFO -- [2023-12-28 13:59:08.842052] Iteration 0
+	iteration: 0
+	N_iter: 1.0
+	RelError[x]: 0.0
+INFO -- [2023-12-28 13:59:17.264396] Iteration 198
+	iteration: 198
+	N_iter: 199.0
+	RelError[x]: 9.617612475760774e-05
+INFO -- [2023-12-28 13:59:17.265303] Stopping Criterion satisfied -> END
+sys:1: ResourceWarning: unclosed socket <zmq.Socket(zmq.PUSH) at 0x14d232200>
+ResourceWarning: Enable tracemalloc to get the object allocation traceback
+Coupled
+INFO -- [2023-12-28 13:59:24.655717] Iteration 0
+	iteration: 0
+	N_iter: 1.0
+	RelError[x]: 0.0
+INFO -- [2023-12-28 14:00:58.036976] Iteration 500
+	iteration: 500
+	N_iter: 501.0
+	RelError[x]: 0.0005264527735212004
+INFO -- [2023-12-28 14:02:31.185403] Iteration 1_000
+	iteration: 1000
+	N_iter: 1001.0
+	RelError[x]: 0.0003123043293117279
+INFO -- [2023-12-28 14:04:04.833084] Iteration 1_500
+	iteration: 1500
+	N_iter: 1501.0
+	RelError[x]: 0.00023505458327821563
+INFO -- [2023-12-28 14:05:37.791035] Iteration 2_000
+	iteration: 2000
+	N_iter: 2001.0
+	RelError[x]: 0.0001981340280338876
+INFO -- [2023-12-28 14:07:10.959857] Iteration 2_500
+	iteration: 2500
+	N_iter: 2501.0
+	RelError[x]: 0.00017062607646064535
+INFO -- [2023-12-28 14:08:44.712742] Iteration 3_000
+	iteration: 3000
+	N_iter: 3001.0
+	RelError[x]: 0.00014871102372418645
+INFO -- [2023-12-28 14:10:17.857857] Iteration 3_500
+	iteration: 3500
+	N_iter: 3501.0
+	RelError[x]: 0.00013130835056579215
+INFO -- [2023-12-28 14:11:51.310158] Iteration 4_000
+	iteration: 4000
+	N_iter: 4001.0
+	RelError[x]: 0.00011769720781127942
+INFO -- [2023-12-28 14:13:25.137273] Iteration 4_500
+	iteration: 4500
+	N_iter: 4501.0
+	RelError[x]: 0.00010631689480484204
+INFO -- [2023-12-28 14:14:32.563249] Iteration 4_856
+	iteration: 4856
+	N_iter: 4857.0
+	RelError[x]: 9.999769464088627e-05
+INFO -- [2023-12-28 14:14:32.564189] Stopping Criterion satisfied -> END
+Decoupled
+Co-Gram Identity
+sys:1: ResourceWarning: unclosed socket <zmq.Socket(zmq.PUSH) at 0x1519000a0>
+ResourceWarning: Enable tracemalloc to get the object allocation traceback
+INFO -- [2023-12-28 14:14:34.787757] Iteration 0
+	iteration: 0
+	N_iter: 1.0
+	RelError[x]: 0.0
+INFO -- [2023-12-28 14:14:53.836310] Iteration 455
+	iteration: 455
+	N_iter: 456.0
+	RelError[x]: 9.994149512662114e-05
+INFO -- [2023-12-28 14:14:53.837216] Stopping Criterion satisfied -> END
+sys:1: ResourceWarning: unclosed socket <zmq.Socket(zmq.PUSH) at 0x151a83ee0>
+ResourceWarning: Enable tracemalloc to get the object allocation traceback
+Coupled
+INFO -- [2023-12-28 14:16:18.936986] Iteration 0
+	iteration: 0
+	N_iter: 1.0
+	RelError[x]: 0.0
+INFO -- [2023-12-28 14:18:00.207600] Iteration 500
+	iteration: 500
+	N_iter: 501.0
+	RelError[x]: 0.00047930255187133875
+INFO -- [2023-12-28 14:19:27.480016] Iteration 931
+	iteration: 931
+	N_iter: 932.0
+	RelError[x]: 9.987541894745513e-05
+INFO -- [2023-12-28 14:19:27.480917] Stopping Criterion satisfied -> END
+Decoupled
+Co-Gram Identity
+sys:1: ResourceWarning: unclosed socket <zmq.Socket(zmq.PUSH) at 0x1524edf00>
+ResourceWarning: Enable tracemalloc to get the object allocation traceback
+INFO -- [2023-12-28 14:21:39.951099] Iteration 0
+	iteration: 0
+	N_iter: 1.0
+	RelError[x]: 0.0
+INFO -- [2023-12-28 14:21:52.079341] Iteration 287
+	iteration: 287
+	N_iter: 288.0
+	RelError[x]: 9.820452428716466e-05
+INFO -- [2023-12-28 14:21:52.080248] Stopping Criterion satisfied -> END
+sys:1: ResourceWarning: unclosed socket <zmq.Socket(zmq.PUSH) at 0x152553220>
+ResourceWarning: Enable tracemalloc to get the object allocation traceback
+Coupled
+INFO -- [2023-12-28 14:21:59.465474] Iteration 0
+	iteration: 0
+	N_iter: 1.0
+	RelError[x]: 0.0
+INFO -- [2023-12-28 14:23:33.349220] Iteration 500
+	iteration: 500
+	N_iter: 501.0
+	RelError[x]: 0.000552061341944578
+INFO -- [2023-12-28 14:25:07.208199] Iteration 1_000
+	iteration: 1000
+	N_iter: 1001.0
+	RelError[x]: 0.00030816865043999326
+INFO -- [2023-12-28 14:26:41.024362] Iteration 1_500
+	iteration: 1500
+	N_iter: 1501.0
+	RelError[x]: 0.00023400161571416518
+INFO -- [2023-12-28 14:28:14.978946] Iteration 2_000
+	iteration: 2000
+	N_iter: 2001.0
+	RelError[x]: 0.00019913675803158118
+INFO -- [2023-12-28 14:29:50.130126] Iteration 2_500
+	iteration: 2500
+	N_iter: 2501.0
+	RelError[x]: 0.0001722052314941255
+INFO -- [2023-12-28 14:31:25.779909] Iteration 3_000
+	iteration: 3000
+	N_iter: 3001.0
+	RelError[x]: 0.00015025927042096833
+INFO -- [2023-12-28 14:33:01.633409] Iteration 3_500
+	iteration: 3500
+	N_iter: 3501.0
+	RelError[x]: 0.00013370976182634176
+INFO -- [2023-12-28 14:34:36.162854] Iteration 4_000
+	iteration: 4000
+	N_iter: 4001.0
+	RelError[x]: 0.00012157488553376394
+INFO -- [2023-12-28 14:36:09.859949] Iteration 4_500
+	iteration: 4500
+	N_iter: 4501.0
+	RelError[x]: 0.00011091694822884244
+INFO -- [2023-12-28 14:37:43.840816] Iteration 5_000
+	iteration: 5000
+	N_iter: 5001.0
+	RelError[x]: 0.00010393757975016676
+INFO -- [2023-12-28 14:38:29.921791] Iteration 5_244
+	iteration: 5244
+	N_iter: 5245.0
+	RelError[x]: 9.999823648518654e-05
+INFO -- [2023-12-28 14:38:29.922703] Stopping Criterion satisfied -> END
+Decoupled
+sys:1: ResourceWarning: unclosed socket <zmq.Socket(zmq.PUSH) at 0x152e37e20>
+ResourceWarning: Enable tracemalloc to get the object allocation traceback
+Co-Gram Identity
+INFO -- [2023-12-28 14:38:32.309856] Iteration 0
+	iteration: 0
+	N_iter: 1.0
+	RelError[x]: 0.0
+INFO -- [2023-12-28 14:38:53.139728] Iteration 500
+	iteration: 500
+	N_iter: 501.0
+	RelError[x]: 0.0005102099470572794
+INFO -- [2023-12-28 14:39:11.487058] Iteration 945
+	iteration: 945
+	N_iter: 946.0
+	RelError[x]: 9.974339337139698e-05
+INFO -- [2023-12-28 14:39:11.487943] Stopping Criterion satisfied -> END
+sys:1: ResourceWarning: unclosed socket <zmq.Socket(zmq.PUSH) at 0x152e09180>
+ResourceWarning: Enable tracemalloc to get the object allocation traceback
+Coupled
+INFO -- [2023-12-28 14:40:10.909884] Iteration 0
+	iteration: 0
+	N_iter: 1.0
+	RelError[x]: 0.0
+INFO -- [2023-12-28 14:41:52.562543] Iteration 500
+	iteration: 500
+	N_iter: 501.0
+	RelError[x]: 0.0004342745212274583
+INFO -- [2023-12-28 14:43:12.815946] Iteration 896
+	iteration: 896
+	N_iter: 897.0
+	RelError[x]: 9.991660635656877e-05
+INFO -- [2023-12-28 14:43:12.816841] Stopping Criterion satisfied -> END
+Decoupled
+Co-Gram Identity
+sys:1: ResourceWarning: unclosed socket <zmq.Socket(zmq.PUSH) at 0x153a1e500>
+ResourceWarning: Enable tracemalloc to get the object allocation traceback
+INFO -- [2023-12-28 14:46:48.128428] Iteration 0
+	iteration: 0
+	N_iter: 1.0
+	RelError[x]: 0.0
+INFO -- [2023-12-28 14:47:00.096887] Iteration 282
+	iteration: 282
+	N_iter: 283.0
+	RelError[x]: 9.859958673481074e-05
+INFO -- [2023-12-28 14:47:00.097822] Stopping Criterion satisfied -> END
+sys:1: ResourceWarning: unclosed socket <zmq.Socket(zmq.PUSH) at 0x153c248e0>
+ResourceWarning: Enable tracemalloc to get the object allocation traceback
+Coupled
+INFO -- [2023-12-28 14:47:07.928257] Iteration 0
+	iteration: 0
+	N_iter: 1.0
+	RelError[x]: 0.0
+INFO -- [2023-12-28 14:48:42.113566] Iteration 500
+	iteration: 500
+	N_iter: 501.0
+	RelError[x]: 0.0004696899729389039
+INFO -- [2023-12-28 14:50:15.937806] Iteration 1_000
+	iteration: 1000
+	N_iter: 1001.0
+	RelError[x]: 0.0002743319050984789
+INFO -- [2023-12-28 14:51:49.824883] Iteration 1_500
+	iteration: 1500
+	N_iter: 1501.0
+	RelError[x]: 0.00021909468126654413
+INFO -- [2023-12-28 14:53:23.891289] Iteration 2_000
+	iteration: 2000
+	N_iter: 2001.0
+	RelError[x]: 0.00018690246336259633
+INFO -- [2023-12-28 14:54:58.000298] Iteration 2_500
+	iteration: 2500
+	N_iter: 2501.0
+	RelError[x]: 0.00016756609879997072
+INFO -- [2023-12-28 14:56:32.470495] Iteration 3_000
+	iteration: 3000
+	N_iter: 3001.0
+	RelError[x]: 0.00015097476563858227
+INFO -- [2023-12-28 14:58:08.865690] Iteration 3_500
+	iteration: 3500
+	N_iter: 3501.0
+	RelError[x]: 0.00013701723551530335
+INFO -- [2023-12-28 14:59:42.767456] Iteration 4_000
+	iteration: 4000
+	N_iter: 4001.0
+	RelError[x]: 0.00012633959683902959
+INFO -- [2023-12-28 15:01:16.714928] Iteration 4_500
+	iteration: 4500
+	N_iter: 4501.0
+	RelError[x]: 0.00011557285787863751
+INFO -- [2023-12-28 15:02:50.968166] Iteration 5_000
+	iteration: 5000
+	N_iter: 5001.0
+	RelError[x]: 0.00010849446899723331
+INFO -- [2023-12-28 15:04:25.256156] Iteration 5_500
+	iteration: 5500
+	N_iter: 5501.0
+	RelError[x]: 0.00010192012096172692
+INFO -- [2023-12-28 15:04:54.384034] Iteration 5_654
+	iteration: 5654
+	N_iter: 5655.0
+	RelError[x]: 9.998762067560742e-05
+INFO -- [2023-12-28 15:04:54.384999] Stopping Criterion satisfied -> END
+Decoupled
+Co-Gram Identity
+sys:1: ResourceWarning: unclosed socket <zmq.Socket(zmq.PUSH) at 0x1525f4700>
+ResourceWarning: Enable tracemalloc to get the object allocation traceback
+INFO -- [2023-12-28 15:04:56.699680] Iteration 0
+	iteration: 0
+	N_iter: 1.0
+	RelError[x]: 0.0
+INFO -- [2023-12-28 15:05:17.396588] Iteration 500
+	iteration: 500
+	N_iter: 501.0
+	RelError[x]: 0.0009265790014081516
+INFO -- [2023-12-28 15:05:37.871357] Iteration 1_000
+	iteration: 1000
+	N_iter: 1001.0
+	RelError[x]: 0.0003537995860099284
+INFO -- [2023-12-28 15:05:58.471303] Iteration 1_500
+	iteration: 1500
+	N_iter: 1501.0
+	RelError[x]: 0.0001566037034373762
+INFO -- [2023-12-28 15:06:13.646903] Iteration 1_870
+	iteration: 1870
+	N_iter: 1871.0
+	RelError[x]: 9.99461307351439e-05
+INFO -- [2023-12-28 15:06:13.647837] Stopping Criterion satisfied -> END
+sys:1: ResourceWarning: unclosed socket <zmq.Socket(zmq.PUSH) at 0x15230a080>
+ResourceWarning: Enable tracemalloc to get the object allocation traceback
+Coupled
+INFO -- [2023-12-28 15:07:33.207772] Iteration 0
+	iteration: 0
+	N_iter: 1.0
+	RelError[x]: 0.0
+INFO -- [2023-12-28 15:09:14.348515] Iteration 500
+	iteration: 500
+	N_iter: 501.0
+	RelError[x]: 0.0006201691222037256
+INFO -- [2023-12-28 15:10:23.203157] Iteration 842
+	iteration: 842
+	N_iter: 843.0
+	RelError[x]: 9.94481689405242e-05
+INFO -- [2023-12-28 15:10:23.204116] Stopping Criterion satisfied -> END
+Decoupled
+Co-Gram Identity
+sys:1: ResourceWarning: unclosed socket <zmq.Socket(zmq.PUSH) at 0x15401dea0>
+ResourceWarning: Enable tracemalloc to get the object allocation traceback
+INFO -- [2023-12-28 15:11:42.982259] Iteration 0
+	iteration: 0
+	N_iter: 1.0
+	RelError[x]: 0.0
+INFO -- [2023-12-28 15:11:53.538600] Iteration 249
+	iteration: 249
+	N_iter: 250.0
+	RelError[x]: 9.701795860187893e-05
+INFO -- [2023-12-28 15:11:53.539548] Stopping Criterion satisfied -> END
+sys:1: ResourceWarning: unclosed socket <zmq.Socket(zmq.PUSH) at 0x153ec5000>
+ResourceWarning: Enable tracemalloc to get the object allocation traceback
+Coupled
+INFO -- [2023-12-28 15:12:00.792998] Iteration 0
+	iteration: 0
+	N_iter: 1.0
+	RelError[x]: 0.0
+INFO -- [2023-12-28 15:13:34.246184] Iteration 500
+	iteration: 500
+	N_iter: 501.0
+	RelError[x]: 0.0007746143326487276
+INFO -- [2023-12-28 15:15:07.507673] Iteration 1_000
+	iteration: 1000
+	N_iter: 1001.0
+	RelError[x]: 0.000424817981250514
+INFO -- [2023-12-28 15:16:40.900171] Iteration 1_500
+	iteration: 1500
+	N_iter: 1501.0
+	RelError[x]: 0.00030385772083258637
+INFO -- [2023-12-28 15:18:14.337216] Iteration 2_000
+	iteration: 2000
+	N_iter: 2001.0
+	RelError[x]: 0.00022749222625137246
+INFO -- [2023-12-28 15:19:47.597362] Iteration 2_500
+	iteration: 2500
+	N_iter: 2501.0
+	RelError[x]: 0.00018363577576416084
+INFO -- [2023-12-28 15:21:20.910592] Iteration 3_000
+	iteration: 3000
+	N_iter: 3001.0
+	RelError[x]: 0.00014679776278659455
+INFO -- [2023-12-28 15:22:54.821028] Iteration 3_500
+	iteration: 3500
+	N_iter: 3501.0
+	RelError[x]: 0.00012165456588210574
+INFO -- [2023-12-28 15:24:28.588609] Iteration 4_000
+	iteration: 4000
+	N_iter: 4001.0
+	RelError[x]: 0.00010142923758358098
+INFO -- [2023-12-28 15:24:36.760745] Iteration 4_043
+	iteration: 4043
+	N_iter: 4044.0
+	RelError[x]: 9.999018803113077e-05
+INFO -- [2023-12-28 15:24:36.761670] Stopping Criterion satisfied -> END
+Decoupled
+Co-Gram Identity
+sys:1: ResourceWarning: unclosed socket <zmq.Socket(zmq.PUSH) at 0x154b475e0>
+ResourceWarning: Enable tracemalloc to get the object allocation traceback
+INFO -- [2023-12-28 15:24:39.068840] Iteration 0
+	iteration: 0
+	N_iter: 1.0
+	RelError[x]: 0.0
+INFO -- [2023-12-28 15:24:46.827279] Iteration 181
+	iteration: 181
+	N_iter: 182.0
+	RelError[x]: 9.990398885918367e-05
+INFO -- [2023-12-28 15:24:46.828183] Stopping Criterion satisfied -> END
+sys:1: ResourceWarning: unclosed socket <zmq.Socket(zmq.PUSH) at 0x154aab100>
+ResourceWarning: Enable tracemalloc to get the object allocation traceback
+Coupled
+INFO -- [2023-12-28 15:34:37.874823] Iteration 0
+	iteration: 0
+	N_iter: 1.0
+	RelError[x]: 0.0
+INFO -- [2023-12-28 15:36:19.078301] Iteration 500
+	iteration: 500
+	N_iter: 501.0
+	RelError[x]: 0.00045167876204003097
+INFO -- [2023-12-28 15:37:22.001958] Iteration 812
+	iteration: 812
+	N_iter: 813.0
+	RelError[x]: 9.952793828494597e-05
+INFO -- [2023-12-28 15:37:22.002849] Stopping Criterion satisfied -> END
+Decoupled
+Co-Gram Identity
+sys:1: ResourceWarning: unclosed socket <zmq.Socket(zmq.PUSH) at 0x153ff1b40>
+ResourceWarning: Enable tracemalloc to get the object allocation traceback
+INFO -- [2023-12-28 16:00:40.406344] Iteration 0
+	iteration: 0
+	N_iter: 1.0
+	RelError[x]: 0.0
+INFO -- [2023-12-28 16:00:50.453225] Iteration 235
+	iteration: 235
+	N_iter: 236.0
+	RelError[x]: 9.719157152945068e-05
+INFO -- [2023-12-28 16:00:50.454140] Stopping Criterion satisfied -> END
+sys:1: ResourceWarning: unclosed socket <zmq.Socket(zmq.PUSH) at 0x154022fe0>
+ResourceWarning: Enable tracemalloc to get the object allocation traceback
+Coupled
+INFO -- [2023-12-28 16:00:57.751787] Iteration 0
+	iteration: 0
+	N_iter: 1.0
+	RelError[x]: 0.0
+INFO -- [2023-12-28 16:02:31.223856] Iteration 500
+	iteration: 500
+	N_iter: 501.0
+	RelError[x]: 0.0005322143120582576
+INFO -- [2023-12-28 16:04:04.991106] Iteration 1_000
+	iteration: 1000
+	N_iter: 1001.0
+	RelError[x]: 0.0003004723050779616
+INFO -- [2023-12-28 16:05:38.680661] Iteration 1_500
+	iteration: 1500
+	N_iter: 1501.0
+	RelError[x]: 0.00022878660965930495
+INFO -- [2023-12-28 16:07:12.246952] Iteration 2_000
+	iteration: 2000
+	N_iter: 2001.0
+	RelError[x]: 0.00018867508245905536
+INFO -- [2023-12-28 16:08:55.249698] Iteration 2_500
+	iteration: 2500
+	N_iter: 2501.0
+	RelError[x]: 0.00016470391883859526
+INFO -- [2023-12-28 16:10:38.947102] Iteration 3_000
+	iteration: 3000
+	N_iter: 3001.0
+	RelError[x]: 0.0001460733986976317
+INFO -- [2023-12-28 16:12:26.229346] Iteration 3_500
+	iteration: 3500
+	N_iter: 3501.0
+	RelError[x]: 0.00013354810433232657
+INFO -- [2023-12-28 16:14:08.138050] Iteration 4_000
+	iteration: 4000
+	N_iter: 4001.0
+	RelError[x]: 0.000122487904771879
+INFO -- [2023-12-28 16:15:50.049602] Iteration 4_500
+	iteration: 4500
+	N_iter: 4501.0
+	RelError[x]: 0.00011105067759550674
+INFO -- [2023-12-28 16:17:29.808469] Iteration 5_000
+	iteration: 5000
+	N_iter: 5001.0
+	RelError[x]: 0.00010142516059667864
+INFO -- [2023-12-28 16:17:47.925584] Iteration 5_092
+	iteration: 5092
+	N_iter: 5093.0
+	RelError[x]: 9.998786539784318e-05
+INFO -- [2023-12-28 16:17:47.926549] Stopping Criterion satisfied -> END
+Decoupled
+sys:1: ResourceWarning: unclosed socket <zmq.Socket(zmq.PUSH) at 0x155f06f80>
+ResourceWarning: Enable tracemalloc to get the object allocation traceback
+Co-Gram Identity
+INFO -- [2023-12-28 16:17:50.506108] Iteration 0
+	iteration: 0
+	N_iter: 1.0
+	RelError[x]: 0.0
+INFO -- [2023-12-28 16:18:11.827357] Iteration 500
+	iteration: 500
+	N_iter: 501.0
+	RelError[x]: 0.00025172789678794884
+INFO -- [2023-12-28 16:18:18.935262] Iteration 667
+	iteration: 667
+	N_iter: 668.0
+	RelError[x]: 9.986530856937778e-05
+INFO -- [2023-12-28 16:18:18.936162] Stopping Criterion satisfied -> END
+sys:1: ResourceWarning: unclosed socket <zmq.Socket(zmq.PUSH) at 0x155e721a0>
+ResourceWarning: Enable tracemalloc to get the object allocation traceback
+Coupled
+INFO -- [2023-12-28 16:19:32.413650] Iteration 0
+	iteration: 0
+	N_iter: 1.0
+	RelError[x]: 0.0
+INFO -- [2023-12-28 16:21:18.248078] Iteration 500
+	iteration: 500
+	N_iter: 501.0
+	RelError[x]: 0.00045138551473720675
+INFO -- [2023-12-28 16:22:47.333914] Iteration 920
+	iteration: 920
+	N_iter: 921.0
+	RelError[x]: 9.9942681413661e-05
+INFO -- [2023-12-28 16:22:47.334852] Stopping Criterion satisfied -> END
+Decoupled
+Co-Gram Identity
+sys:1: ResourceWarning: unclosed socket <zmq.Socket(zmq.PUSH) at 0x1555ab820>
+ResourceWarning: Enable tracemalloc to get the object allocation traceback
+INFO -- [2023-12-28 16:26:36.922905] Iteration 0
+	iteration: 0
+	N_iter: 1.0
+	RelError[x]: 0.0
+INFO -- [2023-12-28 16:26:49.775052] Iteration 304
+	iteration: 304
+	N_iter: 305.0
+	RelError[x]: 9.845068726706102e-05
+INFO -- [2023-12-28 16:26:49.775954] Stopping Criterion satisfied -> END
+sys:1: ResourceWarning: unclosed socket <zmq.Socket(zmq.PUSH) at 0x1555c7a60>
+ResourceWarning: Enable tracemalloc to get the object allocation traceback
+Coupled
+INFO -- [2023-12-28 16:26:57.325204] Iteration 0
+	iteration: 0
+	N_iter: 1.0
+	RelError[x]: 0.0
+INFO -- [2023-12-28 16:28:31.514310] Iteration 500
+	iteration: 500
+	N_iter: 501.0
+	RelError[x]: 0.0005096859687690229
+INFO -- [2023-12-28 16:30:05.598060] Iteration 1_000
+	iteration: 1000
+	N_iter: 1001.0
+	RelError[x]: 0.00028964523350319627
+INFO -- [2023-12-28 16:31:39.728865] Iteration 1_500
+	iteration: 1500
+	N_iter: 1501.0
+	RelError[x]: 0.0002213911319525723
+INFO -- [2023-12-28 16:33:14.323249] Iteration 2_000
+	iteration: 2000
+	N_iter: 2001.0
+	RelError[x]: 0.00018909681541228908
+INFO -- [2023-12-28 16:34:48.400404] Iteration 2_500
+	iteration: 2500
+	N_iter: 2501.0
+	RelError[x]: 0.00016733118655820744
+INFO -- [2023-12-28 16:36:22.471121] Iteration 3_000
+	iteration: 3000
+	N_iter: 3001.0
+	RelError[x]: 0.0001496280389820627
+INFO -- [2023-12-28 16:37:56.325365] Iteration 3_500
+	iteration: 3500
+	N_iter: 3501.0
+	RelError[x]: 0.0001349290502193251
+INFO -- [2023-12-28 16:39:30.219572] Iteration 4_000
+	iteration: 4000
+	N_iter: 4001.0
+	RelError[x]: 0.00012431063916224514
+INFO -- [2023-12-28 16:41:05.592774] Iteration 4_500
+	iteration: 4500
+	N_iter: 4501.0
+	RelError[x]: 0.00011531408302680897
+INFO -- [2023-12-28 16:42:51.536005] Iteration 5_000
+	iteration: 5000
+	N_iter: 5001.0
+	RelError[x]: 0.00010905437502222706
+INFO -- [2023-12-28 16:44:34.502937] Iteration 5_500
+	iteration: 5500
+	N_iter: 5501.0
+	RelError[x]: 0.00010196742903890042
+INFO -- [2023-12-28 16:44:57.398729] Iteration 5_616
+	iteration: 5616
+	N_iter: 5617.0
+	RelError[x]: 9.99989632132324e-05
+INFO -- [2023-12-28 16:44:57.399672] Stopping Criterion satisfied -> END
+Decoupled
+sys:1: ResourceWarning: unclosed socket <zmq.Socket(zmq.PUSH) at 0x15714f2e0>
+ResourceWarning: Enable tracemalloc to get the object allocation traceback
+Co-Gram Identity
+INFO -- [2023-12-28 16:44:59.855288] Iteration 0
+	iteration: 0
+	N_iter: 1.0
+	RelError[x]: 0.0
+INFO -- [2023-12-28 16:45:21.102273] Iteration 500
+	iteration: 500
+	N_iter: 501.0
+	RelError[x]: 0.0006314860433995464
+INFO -- [2023-12-28 16:45:42.288652] Iteration 1_000
+	iteration: 1000
+	N_iter: 1001.0
+	RelError[x]: 0.0001281918954751511
+INFO -- [2023-12-28 16:45:46.354544] Iteration 1_093
+	iteration: 1093
+	N_iter: 1094.0
+	RelError[x]: 9.989453853428505e-05
+INFO -- [2023-12-28 16:45:46.355457] Stopping Criterion satisfied -> END
+sys:1: ResourceWarning: unclosed socket <zmq.Socket(zmq.PUSH) at 0x157184400>
+ResourceWarning: Enable tracemalloc to get the object allocation traceback
+Coupled
+INFO -- [2023-12-28 16:47:35.516414] Iteration 0
+	iteration: 0
+	N_iter: 1.0
+	RelError[x]: 0.0
+INFO -- [2023-12-28 16:49:21.881572] Iteration 500
+	iteration: 500
+	N_iter: 501.0
+	RelError[x]: 0.00042044095471525884
+INFO -- [2023-12-28 16:50:37.849391] Iteration 863
+	iteration: 863
+	N_iter: 864.0
+	RelError[x]: 9.978707959025272e-05
+INFO -- [2023-12-28 16:50:37.850292] Stopping Criterion satisfied -> END
+Decoupled
+Co-Gram Identity
+sys:1: ResourceWarning: unclosed socket <zmq.Socket(zmq.PUSH) at 0x1579f61a0>
+ResourceWarning: Enable tracemalloc to get the object allocation traceback
+INFO -- [2023-12-28 16:54:32.773182] Iteration 0
+	iteration: 0
+	N_iter: 1.0
+	RelError[x]: 0.0
+INFO -- [2023-12-28 16:54:44.040408] Iteration 268
+	iteration: 268
+	N_iter: 269.0
+	RelError[x]: 9.786861478714279e-05
+INFO -- [2023-12-28 16:54:44.041254] Stopping Criterion satisfied -> END
+sys:1: ResourceWarning: unclosed socket <zmq.Socket(zmq.PUSH) at 0x157ba49a0>
+ResourceWarning: Enable tracemalloc to get the object allocation traceback
+Coupled
+INFO -- [2023-12-28 16:54:51.456158] Iteration 0
+	iteration: 0
+	N_iter: 1.0
+	RelError[x]: 0.0
+INFO -- [2023-12-28 16:56:25.352743] Iteration 500
+	iteration: 500
+	N_iter: 501.0
+	RelError[x]: 0.0004010711375352369
+INFO -- [2023-12-28 16:57:59.283534] Iteration 1_000
+	iteration: 1000
+	N_iter: 1001.0
+	RelError[x]: 0.00023697978762349017
+INFO -- [2023-12-28 16:59:33.348517] Iteration 1_500
+	iteration: 1500
+	N_iter: 1501.0
+	RelError[x]: 0.00018914780841130401
+INFO -- [2023-12-28 17:01:07.140328] Iteration 2_000
+	iteration: 2000
+	N_iter: 2001.0
+	RelError[x]: 0.00016127489808099538
+INFO -- [2023-12-28 17:02:41.195378] Iteration 2_500
+	iteration: 2500
+	N_iter: 2501.0
+	RelError[x]: 0.0001449139855594296
+INFO -- [2023-12-28 17:04:14.772595] Iteration 3_000
+	iteration: 3000
+	N_iter: 3001.0
+	RelError[x]: 0.0001302625601308441
+INFO -- [2023-12-28 17:05:48.198014] Iteration 3_500
+	iteration: 3500
+	N_iter: 3501.0
+	RelError[x]: 0.00011792432883729378
+INFO -- [2023-12-28 17:07:22.274972] Iteration 4_000
+	iteration: 4000
+	N_iter: 4001.0
+	RelError[x]: 0.00010866703833512842
+INFO -- [2023-12-28 17:08:56.521263] Iteration 4_500
+	iteration: 4500
+	N_iter: 4501.0
+	RelError[x]: 0.00010133110161819633
+INFO -- [2023-12-28 17:09:14.317510] Iteration 4_595
+	iteration: 4595
+	N_iter: 4596.0
+	RelError[x]: 9.999072495349744e-05
+INFO -- [2023-12-28 17:09:14.318410] Stopping Criterion satisfied -> END
+Decoupled
+Co-Gram Identity
+sys:1: ResourceWarning: unclosed socket <zmq.Socket(zmq.PUSH) at 0x157b70b20>
+ResourceWarning: Enable tracemalloc to get the object allocation traceback
+INFO -- [2023-12-28 17:09:16.629446] Iteration 0
+	iteration: 0
+	N_iter: 1.0
+	RelError[x]: 0.0
+INFO -- [2023-12-28 17:09:37.162703] Iteration 500
+	iteration: 500
+	N_iter: 501.0
+	RelError[x]: 0.0009184525826579562
+INFO -- [2023-12-28 17:09:57.351072] Iteration 1_000
+	iteration: 1000
+	N_iter: 1001.0
+	RelError[x]: 0.0005184311598673909
+INFO -- [2023-12-28 17:10:17.545412] Iteration 1_500
+	iteration: 1500
+	N_iter: 1501.0
+	RelError[x]: 0.00032880057773596277
+INFO -- [2023-12-28 17:10:37.768121] Iteration 2_000
+	iteration: 2000
+	N_iter: 2001.0
+	RelError[x]: 0.00021957243678908845
+INFO -- [2023-12-28 17:10:58.206434] Iteration 2_500
+	iteration: 2500
+	N_iter: 2501.0
+	RelError[x]: 0.00015196727064127892
+INFO -- [2023-12-28 17:11:18.345154] Iteration 3_000
+	iteration: 3000
+	N_iter: 3001.0
+	RelError[x]: 0.00010845499588514628
+INFO -- [2023-12-28 17:11:23.392159] Iteration 3_123
+	iteration: 3123
+	N_iter: 3124.0
+	RelError[x]: 9.995411517245446e-05
+INFO -- [2023-12-28 17:11:23.393101] Stopping Criterion satisfied -> END
+sys:1: ResourceWarning: unclosed socket <zmq.Socket(zmq.PUSH) at 0x157e3bac0>
+ResourceWarning: Enable tracemalloc to get the object allocation traceback
+Coupled
+INFO -- [2023-12-28 17:12:42.923370] Iteration 0
+	iteration: 0
+	N_iter: 1.0
+	RelError[x]: 0.0
+INFO -- [2023-12-28 17:14:24.810156] Iteration 500
+	iteration: 500
+	N_iter: 501.0
+	RelError[x]: 0.0004980358177911853
+INFO -- [2023-12-28 17:15:39.552639] Iteration 871
+	iteration: 871
+	N_iter: 872.0
+	RelError[x]: 9.987255911132313e-05
+INFO -- [2023-12-28 17:15:39.553521] Stopping Criterion satisfied -> END
+Decoupled
+Co-Gram Identity
+sys:1: ResourceWarning: unclosed socket <zmq.Socket(zmq.PUSH) at 0x158665a20>
+ResourceWarning: Enable tracemalloc to get the object allocation traceback
+INFO -- [2023-12-28 17:17:55.049018] Iteration 0
+	iteration: 0
+	N_iter: 1.0
+	RelError[x]: 0.0
+INFO -- [2023-12-28 17:18:05.942267] Iteration 254
+	iteration: 254
+	N_iter: 255.0
+	RelError[x]: 9.94733857961915e-05
+INFO -- [2023-12-28 17:18:05.943176] Stopping Criterion satisfied -> END
+sys:1: ResourceWarning: unclosed socket <zmq.Socket(zmq.PUSH) at 0x159318fa0>
+ResourceWarning: Enable tracemalloc to get the object allocation traceback
+Coupled
+INFO -- [2023-12-28 17:18:13.782441] Iteration 0
+	iteration: 0
+	N_iter: 1.0
+	RelError[x]: 0.0
+INFO -- [2023-12-28 17:19:47.806700] Iteration 500
+	iteration: 500
+	N_iter: 501.0
+	RelError[x]: 0.0006588717626065869
+INFO -- [2023-12-28 17:21:21.584182] Iteration 1_000
+	iteration: 1000
+	N_iter: 1001.0
+	RelError[x]: 0.00036180447492821006
+INFO -- [2023-12-28 17:22:55.825448] Iteration 1_500
+	iteration: 1500
+	N_iter: 1501.0
+	RelError[x]: 0.0002749656879964126
+INFO -- [2023-12-28 17:24:30.220481] Iteration 2_000
+	iteration: 2000
+	N_iter: 2001.0
+	RelError[x]: 0.00022472929053587228
+INFO -- [2023-12-28 17:26:04.527372] Iteration 2_500
+	iteration: 2500
+	N_iter: 2501.0
+	RelError[x]: 0.00019153048749373776
+INFO -- [2023-12-28 17:27:39.011979] Iteration 3_000
+	iteration: 3000
+	N_iter: 3001.0
+	RelError[x]: 0.00016333044738571246
+INFO -- [2023-12-28 17:29:13.287668] Iteration 3_500
+	iteration: 3500
+	N_iter: 3501.0
+	RelError[x]: 0.00014046136292903823
+INFO -- [2023-12-28 17:30:47.646962] Iteration 4_000
+	iteration: 4000
+	N_iter: 4001.0
+	RelError[x]: 0.000124324078739047
+INFO -- [2023-12-28 17:32:21.664836] Iteration 4_500
+	iteration: 4500
+	N_iter: 4501.0
+	RelError[x]: 0.00011094694724176576
+INFO -- [2023-12-28 17:33:39.993618] Iteration 4_917
+	iteration: 4917
+	N_iter: 4918.0
+	RelError[x]: 9.999357917259206e-05
+INFO -- [2023-12-28 17:33:39.994548] Stopping Criterion satisfied -> END
+sys:1: ResourceWarning: unclosed socket <zmq.Socket(zmq.PUSH) at 0x1589aa9e0>
+ResourceWarning: Enable tracemalloc to get the object allocation traceback
+Decoupled
+Co-Gram Identity
+INFO -- [2023-12-28 17:33:42.440480] Iteration 0
+	iteration: 0
+	N_iter: 1.0
+	RelError[x]: 0.0
+INFO -- [2023-12-28 17:33:57.334331] Iteration 353
+	iteration: 353
+	N_iter: 354.0
+	RelError[x]: 9.969111270770559e-05
+INFO -- [2023-12-28 17:33:57.335221] Stopping Criterion satisfied -> END
+sys:1: ResourceWarning: unclosed socket <zmq.Socket(zmq.PUSH) at 0x158bb3880>
+ResourceWarning: Enable tracemalloc to get the object allocation traceback
+Coupled
+INFO -- [2023-12-28 17:35:48.765052] Iteration 0
+	iteration: 0
+	N_iter: 1.0
+	RelError[x]: 0.0
+INFO -- [2023-12-28 17:37:29.792895] Iteration 500
+	iteration: 500
+	N_iter: 501.0
+	RelError[x]: 0.0004640799988879603
+INFO -- [2023-12-28 17:38:56.783487] Iteration 929
+	iteration: 929
+	N_iter: 930.0
+	RelError[x]: 9.971704452643768e-05
+INFO -- [2023-12-28 17:38:56.784450] Stopping Criterion satisfied -> END
+Decoupled
+Co-Gram Identity
+sys:1: ResourceWarning: unclosed socket <zmq.Socket(zmq.PUSH) at 0x15a0de140>
+ResourceWarning: Enable tracemalloc to get the object allocation traceback
+INFO -- [2023-12-28 17:42:49.945249] Iteration 0
+	iteration: 0
+	N_iter: 1.0
+	RelError[x]: 0.0
+INFO -- [2023-12-28 17:43:02.345645] Iteration 292
+	iteration: 292
+	N_iter: 293.0
+	RelError[x]: 9.888615034762017e-05
+INFO -- [2023-12-28 17:43:02.346594] Stopping Criterion satisfied -> END
+sys:1: ResourceWarning: unclosed socket <zmq.Socket(zmq.PUSH) at 0x15a2edc00>
+ResourceWarning: Enable tracemalloc to get the object allocation traceback
+Coupled
+INFO -- [2023-12-28 17:43:09.891916] Iteration 0
+	iteration: 0
+	N_iter: 1.0
+	RelError[x]: 0.0
+INFO -- [2023-12-28 17:44:44.129186] Iteration 500
+	iteration: 500
+	N_iter: 501.0
+	RelError[x]: 0.0005094873967641108
+INFO -- [2023-12-28 17:46:18.053425] Iteration 1_000
+	iteration: 1000
+	N_iter: 1001.0
+	RelError[x]: 0.0002959881791108762
+INFO -- [2023-12-28 17:47:51.919645] Iteration 1_500
+	iteration: 1500
+	N_iter: 1501.0
+	RelError[x]: 0.00022797983275600663
+INFO -- [2023-12-28 17:49:26.066374] Iteration 2_000
+	iteration: 2000
+	N_iter: 2001.0
+	RelError[x]: 0.0001935009034662414
+INFO -- [2023-12-28 17:51:00.324174] Iteration 2_500
+	iteration: 2500
+	N_iter: 2501.0
+	RelError[x]: 0.00016923156952876456
+INFO -- [2023-12-28 17:52:34.229199] Iteration 3_000
+	iteration: 3000
+	N_iter: 3001.0
+	RelError[x]: 0.00014921322570601834
+INFO -- [2023-12-28 17:54:08.177309] Iteration 3_500
+	iteration: 3500
+	N_iter: 3501.0
+	RelError[x]: 0.00013605724776726854
+INFO -- [2023-12-28 17:55:48.295630] Iteration 4_000
+	iteration: 4000
+	N_iter: 4001.0
+	RelError[x]: 0.0001231529483834727
+INFO -- [2023-12-28 17:57:27.870234] Iteration 4_500
+	iteration: 4500
+	N_iter: 4501.0
+	RelError[x]: 0.00011406888443576216
+INFO -- [2023-12-28 17:59:03.443495] Iteration 5_000
+	iteration: 5000
+	N_iter: 5001.0
+	RelError[x]: 0.00010376851063105393
+INFO -- [2023-12-28 17:59:51.706867] Iteration 5_252
+	iteration: 5252
+	N_iter: 5253.0
+	RelError[x]: 9.999543661946828e-05
+INFO -- [2023-12-28 17:59:51.707793] Stopping Criterion satisfied -> END
+Decoupled
+Co-Gram Identity
+sys:1: ResourceWarning: unclosed socket <zmq.Socket(zmq.PUSH) at 0x15aa8a3e0>
+ResourceWarning: Enable tracemalloc to get the object allocation traceback
+INFO -- [2023-12-28 17:59:54.058441] Iteration 0
+	iteration: 0
+	N_iter: 1.0
+	RelError[x]: 0.0
+INFO -- [2023-12-28 18:00:15.305702] Iteration 500
+	iteration: 500
+	N_iter: 501.0
+	RelError[x]: 0.0005918086543926243
+INFO -- [2023-12-28 18:00:36.071183] Iteration 1_000
+	iteration: 1000
+	N_iter: 1001.0
+	RelError[x]: 0.0001258556499073624
+INFO -- [2023-12-28 18:00:39.906555] Iteration 1_088
+	iteration: 1088
+	N_iter: 1089.0
+	RelError[x]: 9.973839403005484e-05
+INFO -- [2023-12-28 18:00:39.907443] Stopping Criterion satisfied -> END
+sys:1: ResourceWarning: unclosed socket <zmq.Socket(zmq.PUSH) at 0x15aa4cfa0>
+ResourceWarning: Enable tracemalloc to get the object allocation traceback
+Coupled
+INFO -- [2023-12-28 18:03:16.555508] Iteration 0
+	iteration: 0
+	N_iter: 1.0
+	RelError[x]: 0.0
+INFO -- [2023-12-28 18:04:57.663215] Iteration 500
+	iteration: 500
+	N_iter: 501.0
+	RelError[x]: 0.0004378818841012034
+INFO -- [2023-12-28 18:06:00.267546] Iteration 807
+	iteration: 807
+	N_iter: 808.0
+	RelError[x]: 9.994428930574886e-05
+INFO -- [2023-12-28 18:06:00.268501] Stopping Criterion satisfied -> END
+Decoupled
+Co-Gram Identity
+sys:1: ResourceWarning: unclosed socket <zmq.Socket(zmq.PUSH) at 0x15b188a60>
+ResourceWarning: Enable tracemalloc to get the object allocation traceback
+INFO -- [2023-12-28 18:10:53.049005] Iteration 0
+	iteration: 0
+	N_iter: 1.0
+	RelError[x]: 0.0
+INFO -- [2023-12-28 18:11:02.278298] Iteration 219
+	iteration: 219
+	N_iter: 220.0
+	RelError[x]: 9.862949745336677e-05
+INFO -- [2023-12-28 18:11:02.279215] Stopping Criterion satisfied -> END
+sys:1: ResourceWarning: unclosed socket <zmq.Socket(zmq.PUSH) at 0x15b19ace0>
+ResourceWarning: Enable tracemalloc to get the object allocation traceback
+Coupled
+INFO -- [2023-12-28 18:11:09.748825] Iteration 0
+	iteration: 0
+	N_iter: 1.0
+	RelError[x]: 0.0
+INFO -- [2023-12-28 18:12:43.416411] Iteration 500
+	iteration: 500
+	N_iter: 501.0
+	RelError[x]: 0.0005552930073540853
+INFO -- [2023-12-28 18:14:17.091325] Iteration 1_000
+	iteration: 1000
+	N_iter: 1001.0
+	RelError[x]: 0.0003183474678011812
+INFO -- [2023-12-28 18:15:50.967649] Iteration 1_500
+	iteration: 1500
+	N_iter: 1501.0
+	RelError[x]: 0.00024758517267540336
+INFO -- [2023-12-28 18:17:24.690004] Iteration 2_000
+	iteration: 2000
+	N_iter: 2001.0
+	RelError[x]: 0.0002076649306897528
+INFO -- [2023-12-28 18:18:58.453158] Iteration 2_500
+	iteration: 2500
+	N_iter: 2501.0
+	RelError[x]: 0.00018000238765757373
+INFO -- [2023-12-28 18:20:32.046020] Iteration 3_000
+	iteration: 3000
+	N_iter: 3001.0
+	RelError[x]: 0.00015889039369116205
+INFO -- [2023-12-28 18:22:05.377471] Iteration 3_500
+	iteration: 3500
+	N_iter: 3501.0
+	RelError[x]: 0.0001428498760796615
+INFO -- [2023-12-28 18:23:39.070686] Iteration 4_000
+	iteration: 4000
+	N_iter: 4001.0
+	RelError[x]: 0.00012879529635478356
+INFO -- [2023-12-28 18:25:13.104897] Iteration 4_500
+	iteration: 4500
+	N_iter: 4501.0
+	RelError[x]: 0.00011755631907203226
+INFO -- [2023-12-28 18:26:46.726957] Iteration 5_000
+	iteration: 5000
+	N_iter: 5001.0
+	RelError[x]: 0.00010803433521895302
+INFO -- [2023-12-28 18:28:05.956618] Iteration 5_422
+	iteration: 5422
+	N_iter: 5423.0
+	RelError[x]: 9.998018356602898e-05
+INFO -- [2023-12-28 18:28:05.957537] Stopping Criterion satisfied -> END
+Decoupled
+Co-Gram Identity
