@@ -1,4 +1,5 @@
 import numpy as np
+import time
 from pyxu.abc import LinOp, QuadraticFunc
 from pyxu.operator import (
     SquaredL2Norm,
@@ -65,6 +66,7 @@ def coupled_solve(
 
     Returns:
         tuple: A tuple containing two NumPy arrays - x1 and x2, which are solutions to the optimization problem.
+        float: The time taken to solve the optimization problem.
     """
 
     print("Coupled")
@@ -86,14 +88,15 @@ def coupled_solve(
         G = NullFunc(2 * op.dim_in)
     else:
         G = hstack([lambda1 * L1Norm(op.dim_in), NullFunc(op.dim_in)])
-
+    start = time.time()
     pgd = PGD(f=F, g=G, verbosity=500)
     sc = MaxIter(n=100) & RelError(eps=1e-4)
     pgd.fit(x0=np.zeros(2 * op.dim_in), stop_crit=sc)
     x = pgd.solution()
     x1 = x[: op.dim_in]
     x2 = x[op.dim_in :]
-    return x1, x2
+    time_solve = time.time() - start
+    return (x1, x2), time_solve
 
 
 def decoupled_solve(
@@ -115,6 +118,7 @@ def decoupled_solve(
 
     Returns:
         tuple: A tuple containing two NumPy arrays - x1 and x2, which are solutions to the optimization problem.
+        float: The time taken to solve the optimization problem.
     """
 
     print("Decoupled")
@@ -129,14 +133,14 @@ def decoupled_solve(
         G = NullFunc(op.dim_in)
     else:
         G = lambda1 / lambda2 * L1Norm(op.dim_in)
-
+    start = time.time()
     pgd = PGD(f=F, g=G, verbosity=500)
     sc = MaxIter(n=100) & RelError(eps=1e-4)
     pgd.fit(x0=np.zeros(op.dim_in), stop_crit=sc)
     x1 = pgd.solution()
     x2 = compute_x2(x1, y)
-
-    return x1, x2
+    time_solve = time.time() - start
+    return (x1, x2), time_solve
 
 
 def Op_x2(op, lambda2, laplacian):
@@ -154,7 +158,7 @@ def Op_x2(op, lambda2, laplacian):
 
     # Co-Gram operator = Identity ?
     random_y = np.random.rand(op.dim_out)
-    vec = np.array([op.dim_in, 1e-12, *[op.dim_in / 2] * (op.dim_out - 2)])
+    vec = np.array([op.dim_in, 1e-10, *[op.dim_in / 2] * (op.dim_out - 2)])
     diag_op = DiagonalOp(vec)
     cogram_id = np.allclose(op.phi.cogram().apply(random_y), diag_op.apply(random_y))
 

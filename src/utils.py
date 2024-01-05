@@ -23,14 +23,17 @@ def plot_signal(sparse: np.ndarray, smooth: np.ndarray) -> None:
     """
     signal = sparse + smooth
     fig, axes = plt.subplots(1, 3, figsize=(20, 20))
-    for ax, img, title in zip(
-        axes, [sparse, smooth, signal], ["Sparse", "Smooth", "Signal"]
+    for ax, img, title, max in zip(
+        axes,
+        [sparse, smooth, signal],
+        ["Sparse", "Smooth", "Signal"],
+        [6, 2, np.max(signal)],
     ):
         ax.set_title(title, fontsize=20)
         ax.set_xticks([])
         ax.set_yticks([])
-        divnorm = colors.CenteredNorm(vcenter=0.0)
-        im = ax.imshow(img, cmap="seismic", norm=divnorm)
+        divnorm = colors.CenteredNorm(vcenter=0.0, halfrange=max)
+        im = ax.imshow(img, cmap="seismic", norm=divnorm, interpolation="none")
         divider = make_axes_locatable(ax)
         cax1 = divider.append_axes("right", size="5%", pad=0.05)
         cbar = plt.colorbar(im, cax=cax1)
@@ -141,11 +144,7 @@ def plot_results(
             ax.set_yticks([])
             # halfrange if needs to set min max colorbar
             divnorm = colors.CenteredNorm(vcenter=0.0, halfrange=halfranges[j])
-            im = ax.imshow(
-                sig,
-                cmap="seismic",
-                norm=divnorm,
-            )
+            im = ax.imshow(sig, cmap="seismic", norm=divnorm, interpolation="none")
             if i == 0:
                 divider = make_axes_locatable(ax)
                 cax = divider.append_axes(position="bottom", size="5%", pad=0.05)
@@ -266,13 +265,20 @@ def objective_func(
     Returns:
     - tuple: Three terms of the objective
     """
-    return (
+    lambda1 *= np.linalg.norm(op.phi.adjoint(y), ord=np.inf)
+    lambda2 *= np.linalg.norm(op.phi.adjoint(y), ord=np.inf)
+
+    data_fidelity = (
         1
         / 2
-        * np.sum((op(sparse_rcstr.reshape(-1) + smooth_rcstr.reshape(-1)) - y) ** 2),
-        (lambda2 / 2) * np.sum(laplacian_op.apply(smooth_rcstr.reshape(-1)) ** 2),
-        lambda1 * np.sum(np.abs(sparse_rcstr)),
+        * np.sum((op(sparse_rcstr.reshape(-1) + smooth_rcstr.reshape(-1)) - y) ** 2)
     )
+    if laplacian_op:
+        l2 = (lambda2 / 2) * np.sum(laplacian_op.apply(smooth_rcstr.reshape(-1)) ** 2)
+    else:
+        l2 = (lambda2 / 2) * np.sum(smooth_rcstr**2)
+    l1 = lambda1 * np.sum(np.abs(sparse_rcstr))
+    return data_fidelity, l2, l1
 
 
 def compare(
@@ -373,6 +379,22 @@ def difference(
     smooth_rcstr_coupled,
     smooth_rcstr_decoupled,
 ):
+    """
+    Compute and visualize the difference between reconstructions.
+
+    Args:
+        - N (int): Size of the signal.
+        - laplacian (bool): Flag indicating whether Laplacian regularization was used.
+        - lambda1 (float): Value of the first regularization parameter.
+        - lambda2 (float): Value of the second regularization parameter.
+        - sparse_rcstr_coupled (numpy.ndarray): Sparse coupled reconstruction.
+        - sparse_rcstr_decoupled (numpy.ndarray): Sparse decoupled reconstruction.
+        - smooth_rcstr_coupled (numpy.ndarray): Smooth coupled reconstruction.
+        - smooth_rcstr_decoupled (numpy.ndarray): Smooth decoupled reconstruction.
+
+    Returns:
+        - matplotlib.figure.Figure: Figure object displaying the reconstruction differences.
+    """
     if laplacian:
         title = "Reconstruction difference with Laplacian "
     else:
@@ -432,6 +454,21 @@ def sparse_error(
     sparse_rcstr_coupled,
     sparse_rcstr_decoupled,
 ):
+    """
+    Visualize the error in sparse reconstructions.
+
+    Args:
+        - N (int): Size of the signal.
+        - laplacian (bool): Flag indicating whether Laplacian regularization was used.
+        - lambda1 (float): Value of the first regularization parameter.
+        - lambda2 (float): Value of the second regularization parameter.
+        - sparse_signal (numpy.ndarray): Original sparse signal.
+        - sparse_rcstr_coupled (numpy.ndarray): Sparse coupled reconstruction.
+        - sparse_rcstr_decoupled (numpy.ndarray): Sparse decoupled reconstruction.
+
+    Returns:
+        - matplotlib.figure.Figure: Figure object displaying the sparse reconstruction errors.
+    """
     fig = plt.figure(figsize=(16, 15))
     if laplacian:
         title = "Sparse Error with Laplacian "
@@ -529,7 +566,7 @@ def write_to_csv(filename, data):
     - data (list): A list representing a row of data to be written to the CSV file.
 
     The CSV file will contain the following header:
-    "seed", "size", "coupled", "laplacian", "lambda1", "lambda2", "time", "error", "l2", "l1"
+    "seed", "size", "coupled", "laplacian", "lambda1", "lambda2", "timepre", "time", "error", "l2", "l1"
     """
     with open(EXP_PATH + filename, "a", newline="") as file:
         writer = csv.writer(file)
@@ -541,6 +578,7 @@ def write_to_csv(filename, data):
                 "laplacian",
                 "lambda1",
                 "lambda2",
+                "timepre",
                 "time",
                 "error",
                 "l2",

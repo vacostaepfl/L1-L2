@@ -226,6 +226,8 @@ class NuFFT:
             fontsize="x-small",
         )
         ax.grid(visible=True)
+        ax.set_xlim([-0.1, np.pi + 0.1])
+        ax.set_ylim([-np.pi - 0.1, np.pi + 0.1])
         ax.set_axisbelow(True)
         if isinstance(self.L, float):
             fig.suptitle(f"Samples: L={self.L:.0%}", verticalalignment="top")
